@@ -14,6 +14,9 @@
 ##  GNU General Public License for more details.
 ########################################################################
 
+import numpy as np
+from .utils import full_turn_angle
+
 screen_zoom = 1/2
 
 # There are 148 beautiful pre-defined colors!
@@ -45,12 +48,12 @@ my_color_palette = {'superBlue'   : '#648fff',
                      'BrightGreen': "#24ff24",
                      'Yellow'     : "#ffff6d"}
 
-my_default_diamond_size = 0.015 
+default_diamond_size = 0.015 
 default_outlines_width = 5 
 default_extreme_layer_nb = 1001    
 
 # colors, alphas and linewidths!
-my_default_color_etc_settings = {
+default_color_etc_settings = {
                      "line" : {'color' : 'black', 
                                'linewidth' : 2, 
                                'joinstyle' : 'straight', 
@@ -68,23 +71,23 @@ my_default_color_etc_settings = {
                                   'layer_nb' : default_extreme_layer_nb}}
 
 # Font sizes and adjustment needed to fit them
-my_default_font_sizes = {'title'      : 16/screen_zoom/2,
+default_font_sizes = {'title'      : 16/screen_zoom/2,
                          'axes_label' : 12/screen_zoom/2,
                          'axes_tick'  : 8/screen_zoom/2}
 
 # Figure sizes (in inches) and DPIs  
 # Figure size in pixels is DPI * figure size in inches
 
-my_default_display_params = {'max_figsize' : [4.5/screen_zoom, 3.5/screen_zoom],
+default_display_params = {'max_figsize' : [4.5/screen_zoom, 3.5/screen_zoom],
                              'min_margin' : 0.25/screen_zoom,
                              'title_pad' : 3.5/screen_zoom,
                              'x_axis_label' : "RULER FOR X's", 
                              'y_axis_label' : "RULER FOR Y's"}
 
-my_default_image_params = {'dpi'     : 200*screen_zoom,
+default_image_params = {'dpi'     : 200*screen_zoom,
                            'format'  :'png'}
 
-my_default_animation_params = {'dpi'     : 70,
+default_animation_params = {'dpi'     : 70,
                                'interval': 1000/24,
                                'blit'    : True,
                                'repeat'  : False,
@@ -92,9 +95,9 @@ my_default_animation_params = {'dpi'     : 70,
                                'writer'  : 'ffmpeg',
                                'format'  : 'mp4'}
 
-my_default_images_folder = "images_videos"
+default_images_folder = "images_videos"
 
-my_default_text_bubble_params = {'color' : 'black',
+default_text_bubble_params = {'color' : 'black',
                                  'background_color' : 'white',
                                  'linewidth' : 0,
                                  'linecolor' : 'black',
@@ -110,4 +113,79 @@ my_default_text_bubble_params = {'color' : 'black',
                                  'opacity' : 1, 
                                  'layer_nb' : 1,
                                  'triangle_width' : 5}
-                                 
+
+########################################################################
+
+demo_screen_zoom = 1.
+
+demo_figure_params = {'canvas_width' : 20, 
+                 'canvas_height' : 14,
+                 'figsize' : [0.5 * 14 / demo_screen_zoom, 0.5 *8 / demo_screen_zoom],
+                 'dpi' : 150 * demo_screen_zoom,
+                 'tick_step' : 1,
+                 'font_size' : 0.5 * 10/demo_screen_zoom,
+                 'widget_lefts' : {'left': 0.21, 'right' : 0.56},
+                 'plot_gap' : 0.05,
+                 'plot_bottom_gap' : 0.01,
+                 'left_right_gap' : 0.0025,
+                 'left_right_opacity' : 0.1,
+                 'add_width_to_axes_background' : 0.039,
+                 'add_height_to_axes_background' : 0.01,
+                 'x_axis_label' : "RULER FOR X's", 
+                 'y_axis_label' : "RULER FOR Y's"}
+
+demo_shapes = {"left" : "a_triangle", "right" : "a_square"}
+
+demo_style = {"left" : {"line"   : {'linewidth' : 5}, 
+                                   "patch"  : {'opacity' : 1.0}, 
+                                   'outline': {'linewidth' : 5, 'color' : 'superGold'},
+                                   'diamond': {"color" : 'superOrange'},
+                                   ''       : {"color" : 'superOrange', 'layer_nb' : 1}},
+                         "right": {"line"   : {}, 
+                                   "patch"  : {'opacity' : 0.5}, 
+                                   'outline': {'color' : 'none'}, # default outline width is 0
+                                   'diamond': {"color" : 'superBlue'},
+                                   ''       : {"color" : 'superBlue', 'layer_nb' : 1}}}
+
+demo_style_widgets_value_ranges = {"color"    : ['superGold', 'superBlue', 'superOrange', 'superPink', 'none'],
+                                   "layer_nb"  : [0, 3, 1, 1],
+                                   "linewidth" : [0, 10, 1, 1], 
+                                   "opacity"   : [0, 1, 1, 0.1],
+                                   "joinstyle" : ['rounded', 'straight', 'cut off'],
+                                   "capstyle"  : ['rounded', 'straight', 'cut off']}
+
+canvas_width = demo_figure_params['canvas_width']
+canvas_height = demo_figure_params['canvas_height']
+half_min_size = min(canvas_width, canvas_height) / 2
+
+slider_range = {
+  'half_min_size': [0., half_min_size,
+                    int(half_min_size / 2), 1],
+  'plus_minus_half_min_size':
+  [-half_min_size, half_min_size,
+   int(half_min_size / 2), .1],
+  'half_min_size_34': [0., half_min_size,
+                       int(half_min_size * 3 / 4), 1],
+  'half_width': [0., canvas_width, int(canvas_width / 2), 1],
+  'half_height': [0., canvas_height,
+                  int(canvas_height / 2), 1],
+  'stretch': [-3, 3, 1, 0.1],
+  'from_0_to_5': [0., 5, 1, 0.1],
+  'from_0_to_1': [0., 1, 0.6, 0.05],
+  '5_to_50': [5, 50, 10, 5],
+  'turn': [0, full_turn_angle, 0, full_turn_angle / 12],
+  'double_turn': [0, 2 * full_turn_angle, 0, full_turn_angle / 12],
+  'long_turn': [0, 5 * full_turn_angle, 0, full_turn_angle / 4],
+  'half_turn': [0, full_turn_angle / 2, 0, full_turn_angle / 12],
+  'quarter_turn': [0, full_turn_angle / 4, 0, full_turn_angle / 12],
+  'vertices': [1, 12, 5, 1],
+}
+
+########################################################################
+
+widget_params = {'radio_width' : 0.128,
+                 'radio_side_margin' : 0.01,
+                 'height' : 0.0239,
+                 'width' : 0.27,
+                 'gap' : 0.01,
+                 'slider_initline_linewidth' : 10}

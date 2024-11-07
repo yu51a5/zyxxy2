@@ -1,10 +1,10 @@
 
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_rectangle, draw_a_circle, draw_a_smile, draw_a_polygon, draw_a_segment
-from yyyyy_layers import shift_layers
-from yyyyy_shape_style import set_default_line_style
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_rectangle, draw_a_circle, draw_a_smile, draw_a_polygon, draw_a_segment
+from zyxxy2 import shift_layers
+from zyxxy2 import set_default_line_style
 from yyyyy_coordinates import build_an_egg, build_an_arc, link_contours
-from yyyyy_utils import is_contour_V_symmetric, conc_contours, remove_contour_points
+from zyxxy2 import is_contour_V_symmetric, conc_contours, remove_contour_points
 import numpy as np
 
 #######################################################

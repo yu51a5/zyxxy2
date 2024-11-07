@@ -1,11 +1,11 @@
 # setting MPLCONFIGDIR to suppress the warning
 # see https://stackoverflow.com/questions/9827377/setting-matplotlib-mplconfigdir-consider-setting-mplconfigdir-to-a-writable-dir
-import os, os.path, tempfile, sys, datetime
+import sys; sys.path.append('src')
 
-print("started", datetime.datetime.now())
-temp_dir = tempfile.TemporaryDirectory()
-os.environ['MPLCONFIGDIR'] = temp_dir.name
-print("created temporary dir", datetime.datetime.now())
+from zyxxy2 import demo_all_shapes # demo_shape
+
+from zyxxy2 import example_penguins # 
+example_penguins()
 
 ################################################################
 # import draw_a_flag_of_Japan
@@ -24,7 +24,7 @@ print("created temporary dir", datetime.datetime.now())
 # import draw_simple_letters
 
 # import demo_trigo
-# import demo_yyyyy_shape
+
 # import MY_yyyyy_demo_DUMP
 
 # import draw_fancy_letters
@@ -44,7 +44,7 @@ print("created temporary dir", datetime.datetime.now())
 # import drawn_a_Coccinelle
 # import drawn_blue_green_mandala
 
-from yyyyy_all_EXAMPLES import *
+from zyxxy2 import *
 
 # example_croc()
 # example_penguins()

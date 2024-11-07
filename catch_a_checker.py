@@ -1,6 +1,6 @@
 
-from yyyyy_canvas import create_canvas_and_axes, show_and_save, wait_for_enter
-from yyyyy_shape_functions import draw_a_square, draw_a_circle, draw_a_segment
+from zyxxy2 import create_canvas_and_axes, show_and_save, wait_for_enter
+from zyxxy2 import draw_a_square, draw_a_circle, draw_a_segment
 from random import choice
 import math
 #######################################################

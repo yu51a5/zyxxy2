@@ -1,8 +1,8 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_rectangle
-from yyyyy_shape_style import get_canvas_height, get_canvas_width, get_canvas_left, get_canvas_bottom
-from yyyyy_colors import get_multi_gradient_color
-from yyyyy_utils import equal_or_almost
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_rectangle
+from zyxxy2 import get_canvas_height, get_canvas_width, get_canvas_left, get_canvas_bottom
+from zyxxy2 import get_multi_gradient_color
+from zyxxy2 import equal_or_almost
 
 def draw_gradient_rectangles(lim1, lim2, colors, how_many=200, color_limits=None, clip_outline=None, is_vertical=True):
   assert not equal_or_almost(lim1, lim2)

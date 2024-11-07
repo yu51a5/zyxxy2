@@ -1,8 +1,9 @@
 import numpy as np
 from matplotlib.colors import is_color_like, to_rgb
-from MY_yyyyy_SETTINGS_general import my_color_palette
-from yyyyy_utils import find_LCM, get_sign, is_the_same_point, is_a_number
 from math import floor
+
+from .settings import my_color_palette
+from .utils import find_LCM, get_sign, is_the_same_point, is_a_number
 
 ##################################################################
 ## color HELPERS                                               ## 

@@ -19,11 +19,11 @@ import numpy as np
 
 from matplotlib.pyplot import Polygon, gca
 from matplotlib.transforms import Bbox
-import yyyyy_coordinates
-from yyyyy_utils import is_the_same_contour, move_by_matrix, get_rotation_matrix, sin, cos, is_a_number
-from yyyyy_shape_style import set_polygon_style, get_diamond_size, format_arg_dict, line_arg_types, \
+from . import coordinates
+from .utils import is_the_same_contour, move_by_matrix, get_rotation_matrix, sin, cos, is_a_number
+from .shape_style import set_polygon_style, get_diamond_size, format_arg_dict, line_arg_types, \
                               raise_Exception_if_not_processed, patch_arg_types, get_polygon_style, get_trace_color
-from yyyyy_bbox import ObjPosition
+from .bbox import ObjPosition
 
 ########################################################################################
 class ShapeFormAttribute:
@@ -80,7 +80,7 @@ class ShapeStyleAttribute:
 class Shape:
 
 ##################################################################
-  for k in yyyyy_coordinates._get_all_param_names():
+  for k in coordinates._get_all_param_names():
     locals()[k] = ShapeFormAttribute(name=k)
 
   for s in ['left', 'right', 'bottom', 'top', 'center_x', 'center_y']:
@@ -358,7 +358,7 @@ class Shape:
     for key, value in kwargs.items():
       self.shape_kwargs[key] = value
     
-    method_to_call = getattr(yyyyy_coordinates, 'build_'+self.shapename)
+    method_to_call = getattr(coordinates, 'build_'+self.shapename)
     contour = method_to_call(**self.shape_kwargs)
 
     self._update_the_shape_of_the_Shape(contour)
@@ -373,7 +373,7 @@ class Shape:
   def reset_given_shapename_and_arguments_and_move(self, shapename, kwargs_shape, kwargs_common):
 
     if isinstance(shapename, str):
-      method_to_call = getattr(yyyyy_coordinates, 'build_'+shapename)
+      method_to_call = getattr(coordinates, 'build_'+shapename)
       contour = method_to_call(**kwargs_shape)
       self.shapename = shapename
       self.shape_kwargs = kwargs_shape
@@ -420,7 +420,7 @@ class Shape:
         useful_args['center_x'] = kwargs_common['diamond_x']
         useful_args['center_y'] = kwargs_common['diamond_y']
 
-      new_contour = yyyyy_coordinates._init_shift(contour=self.get_xy(), **useful_args)    
+      new_contour = coordinates._init_shift(contour=self.get_xy(), **useful_args)    
 
       # updating the elements
       for what in [self.line, self.outline, self.patch]:
@@ -428,7 +428,7 @@ class Shape:
           Shape._set_xy(what, new_contour)
 
     # check the shift and do turning and streching
-    common_keys_for_shape = yyyyy_coordinates._get_common_keys_for_shape(
+    common_keys_for_shape = coordinates._get_common_keys_for_shape(
         shapename=self.shapename, 
         available_arguments=kwargs_common)
 

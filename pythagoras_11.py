@@ -1,7 +1,7 @@
-import sys; sys.path.insert(0, '.') 
-from yyyyy_shape_functions import draw_a_segment
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_polygon, draw_a_square, draw_a_rhombus, draw_a_polygon
+import sys; sys.path.append('src')
+from zyxxy2 import draw_a_segment
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_polygon, draw_a_square, draw_a_rhombus, draw_a_polygon
 from math import sqrt
 side = 2
 create_canvas_and_axes(  canvas_width = 2.5,

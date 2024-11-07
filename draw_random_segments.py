@@ -1,6 +1,6 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_broken_line
-from yyyyy_utils import random_integer_number
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_broken_line
+from zyxxy2 import random_integer_number
 
 #######################################################
 # Creating the canvas!                               

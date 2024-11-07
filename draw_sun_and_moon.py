@@ -1,7 +1,7 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_segment, draw_a_sector, draw_a_star, draw_a_crescent
-from yyyyy_layers import shift_layers, new_layer
-from yyyyy_utils import random_integer_number
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_segment, draw_a_sector, draw_a_star, draw_a_crescent
+from zyxxy2 import shift_layers, new_layer
+from zyxxy2 import random_integer_number
 
 sunset_radius = 0.5
 height_sm = 1.6

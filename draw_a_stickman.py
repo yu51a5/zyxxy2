@@ -1,8 +1,10 @@
+import sys; sys.path.append('src')
+
 #######################################################
 # Importing the functions we will need !             ##
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_segment, draw_a_rectangle, draw_a_smile, draw_a_circle
-from yyyyy_shape_style import set_default_patch_color, set_default_linewidth
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_segment, draw_a_rectangle, draw_a_smile, draw_a_circle
+from zyxxy2 import set_default_patch_color, set_default_linewidth
 
 
 #######################################################

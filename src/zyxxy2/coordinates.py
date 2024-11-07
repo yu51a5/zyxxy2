@@ -15,12 +15,12 @@
 ########################################################################
 
 import numpy as np
-from yyyyy_utils import sin, cos, asin, acos, atan, is_the_same_point, my_default_vertices_qty_in_circle, full_turn_angle, link_contours, add_a_left_mirror, equal_or_almost
-
 from scipy.optimize import fsolve
 from math import sqrt, ceil, floor
 
-yyyyy_line_shapes = ['a_segment', 'a_smile', 'a_coil', 'an_arc', 'a_zigzag', 'a_wave', 'a_power_curve', 'a_squiggle_curve']
+from .utils import sin, cos, asin, acos, atan, is_the_same_point, default_vertices_qty_in_circle, full_turn_angle, link_contours, add_a_left_mirror, equal_or_almost
+
+line_shapes = ['a_segment', 'a_smile', 'a_coil', 'an_arc', 'a_zigzag', 'a_wave', 'a_power_curve', 'a_squiggle_curve']
 
 ########################################################################
 
@@ -112,7 +112,7 @@ def _get_common_keys_for_shape(shapename, available_arguments=None):
 ########################################################################
 
 def get_type_given_shapename(shapename):
-  if (shapename in yyyyy_line_shapes) or shapename == 'a_broken_line':
+  if (shapename in line_shapes) or shapename == 'a_broken_line':
     return 'line'
   elif (shapename in shape_names_params_dicts_definition.keys()) or shapename == 'a_polygon':
     return 'patch'
@@ -147,7 +147,7 @@ shape_names_params_dicts_definition = {
 
 ########################################################################
 
-sin_cos_std = [[sin(a/my_default_vertices_qty_in_circle*full_turn_angle), cos(a/my_default_vertices_qty_in_circle*full_turn_angle)] for a in range(my_default_vertices_qty_in_circle)]
+sin_cos_std = [[sin(a/default_vertices_qty_in_circle*full_turn_angle), cos(a/default_vertices_qty_in_circle*full_turn_angle)] for a in range(default_vertices_qty_in_circle)]
 
 ############################################################################################################
 def _init_shift(contour, left=None, center_x=None, right=None, bottom=None, center_y=None, top=None):
@@ -206,8 +206,8 @@ def _build_an_arc(angle_start, angle_end):
   turn_nb_start = floor(angle_start_normalized)
   turn_nb_end   = floor(  angle_end_normalized)
 
-  residual_start = ceil((angle_start_normalized - turn_nb_start) * my_default_vertices_qty_in_circle)
-  residual_end = floor((angle_end_normalized - turn_nb_end)  * my_default_vertices_qty_in_circle)
+  residual_start = ceil((angle_start_normalized - turn_nb_start) * default_vertices_qty_in_circle)
+  residual_end = floor((angle_end_normalized - turn_nb_end)  * default_vertices_qty_in_circle)
 
   if is_the_same_point(turn_nb_start, turn_nb_end):
     contour = sin_cos_std[residual_start : (residual_end+1)]
@@ -221,14 +221,14 @@ def _build_an_arc(angle_start, angle_end):
   if c_len == contour.size:
     added_start = None
   else:
-    added_start = residual_start - (angle_start_normalized % 1) * my_default_vertices_qty_in_circle
+    added_start = residual_start - (angle_start_normalized % 1) * default_vertices_qty_in_circle
 
   c_len = contour.size 
   contour = link_contours(contour, [[sin(angle_end), cos(angle_end)]])
   if c_len == contour.size:
     added_end = None
   else:
-    added_end = -residual_end + (angle_end_normalized % 1) * my_default_vertices_qty_in_circle
+    added_end = -residual_end + (angle_end_normalized % 1) * default_vertices_qty_in_circle
 
   return contour, added_start, added_end
 
@@ -242,7 +242,7 @@ def build_a_squiggle(angle_start, angle_end, speed_x, width, height):
   if angle_start > angle_end:
     angle_start, angle_end = angle_end, angle_start
 
-  step = full_turn_angle / (max(abs(speed_x), 1) * my_default_vertices_qty_in_circle)
+  step = full_turn_angle / (max(abs(speed_x), 1) * default_vertices_qty_in_circle)
   angles = link_contours(np.arange(angle_start, angle_end, step), [angle_end])
 
   contour = np.array([[sin(a * speed_x), cos(a)] for a in angles])  * [width/2, height/2]
@@ -267,8 +267,8 @@ def build_a_coil(angle_start, nb_turns, speed_x, speed_out):
 
   len_contour_m1 = contour.shape[0] - 1
 
-  mult_xy = [1] + [speed_out**(1./my_default_vertices_qty_in_circle)] * len_contour_m1
-  add_x = [0] + [speed_x/my_default_vertices_qty_in_circle] * len_contour_m1
+  mult_xy = [1] + [speed_out**(1./default_vertices_qty_in_circle)] * len_contour_m1
+  add_x = [0] + [speed_x/default_vertices_qty_in_circle] * len_contour_m1
   if added_start is not None:
     mult_xy[1] = mult_xy[1] ** added_start
     add_x[1] *= added_start
@@ -405,7 +405,7 @@ def _build_an_egg(power, tip_addon):
   alpha_solution = acos(cos_alpha_solution)
   _arc = build_an_arc(angle_start=0, angle_end=full_turn_angle/2-alpha_solution)
 
-  pf_points_qty = int(my_default_vertices_qty_in_circle/4)
+  pf_points_qty = int(default_vertices_qty_in_circle/4)
 
   power_func_x = sqrt(1 - cos_alpha_solution*cos_alpha_solution) * (1. - np.array([n/pf_points_qty for n in range(pf_points_qty+1)]))
   power_func_2D = [[x, a * (x**power) ] for x in power_func_x]

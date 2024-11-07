@@ -1,7 +1,7 @@
 
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_square
-from yyyyy_all_EXAMPLES import draw_a_gradient_chessboard
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_square
+from zyxxy2 import draw_a_gradient_chessboard
 
 #######################################################
 # Creating the canvas!                               ##

@@ -1,9 +1,9 @@
 
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_triangle, draw_a_star, draw_a_circle, draw_a_crescent, draw_an_ellipse, draw_a_segment, draw_a_sector
-from yyyyy_shape_style import set_default_patch_color, set_default_linewidth
-from yyyyy_layers import new_layer_outline_behind
-from yyyyy_utils import tan, asin, sin, cos, atan
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_triangle, draw_a_star, draw_a_circle, draw_a_crescent, draw_an_ellipse, draw_a_segment, draw_a_sector
+from zyxxy2 import set_default_patch_color, set_default_linewidth
+from zyxxy2 import new_layer_outline_behind
+from zyxxy2 import tan, asin, sin, cos, atan
 
 #######################################################
 # Creating the canvas!                               ##

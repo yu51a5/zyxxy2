@@ -18,24 +18,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import functools
 
-from yyyyy_utils import full_turn_angle, equal_or_almost
-from yyyyy_canvas import create_canvas_and_axes, show_demo, _find_scale_place_axes
-from yyyyy_shape_class import Shape
-from yyyyy_coordinates import shape_names_params_dicts_definition, get_type_given_shapename, _get_common_keys_for_shape, common_params_dict_definition
-from yyyyy_widgets import get_widget_value, set_slider_values, set_default_widget_width, add_a_button, add_a_slider, add_vertical_radio_buttons, reset_widget, get_default_widget_width
-from yyyyy_files import write_file
-
-from MY_yyyyy_SETTINGS_general import my_default_color_etc_settings, default_extreme_layer_nb
-from MY_yyyyy_SETTINGS_demo import figure_params, demo_style_widgets_value_ranges, my_default_demo_shapes, my_default_demo_style
-from MY_yyyyy_SETTINGS_widgets import widget_params
-from demo_yyyyy_shape_helper import canvas_width, canvas_height, slider_range
-
-demo_style_widgets_value_ranges["joinstyle"] = [
-  'rounded', 'straight', 'cut off'
-]
-demo_style_widgets_value_ranges["capstyle"] = [
-  'rounded', 'straight', 'cut off'
-]
+from .utils import equal_or_almost
+from .canvas import create_canvas_and_axes, show_demo, _find_scale_place_axes
+from .shape_class import Shape
+from .coordinates import shape_names_params_dicts_definition, get_type_given_shapename, _get_common_keys_for_shape, common_params_dict_definition
+from .widgets import get_widget_value, set_slider_values, set_default_widget_width, add_a_button, add_a_slider, add_vertical_radio_buttons, reset_widget, get_default_widget_width, set_widget_visible
+from .files import write_file
+from .colors import find_color_code
+from .settings import default_color_etc_settings, default_extreme_layer_nb
+from .settings import demo_figure_params as figure_params, demo_style_widgets_value_ranges, demo_shapes, demo_style
+from .settings import widget_params, canvas_width, canvas_height, slider_range
 
 plt.rcParams.update({'font.size': figure_params['font_size']})
 
@@ -130,7 +122,7 @@ background_rectangle = {
   side: plt.Rectangle(xy=(left, 0),
                       width=x0,
                       height=1,
-                      color=my_default_demo_style[side][""]["color"],
+                      color=find_color_code(demo_style[side][""]["color"]),
                       alpha=figure_params['left_right_opacity'],
                       zorder=-default_extreme_layer_nb,
                       fill=True,
@@ -204,8 +196,9 @@ main_ax = _find_scale_place_axes(
   xlabel=figure_params['x_axis_label'],
   ylabel=figure_params['y_axis_label'],
   tick_step_x=figure_params['tick_step'], tick_step_y=figure_params['tick_step'],
-  xy=(plot_ax_left - figure_params['add_width_to_axes_background'],
-      plot_ax_bottom - figure_params['add_height_to_axes_background']))
+  xy=(plot_ax_left,# - figure_params['add_width_to_axes_background'],
+      plot_ax_bottom + 3 * figure_params['add_height_to_axes_background']
+      ))
 
 canvas_parameters = {
   'canvas_width': canvas_width,
@@ -249,8 +242,8 @@ def dump_py_file():
   file_contents = [
     "# This file is regenerated every time you press 'Dump Python File' button",
     "# Rename it if you want to keep the contents", "",
-    "from yyyyy_canvas import create_canvas_and_axes, show_and_save",
-    "from yyyyy_shape_functions import " +
+    "from .canvas import create_canvas_and_axes, show_and_save",
+    "from .shape_functions import " +
     ", ".join(active_shapename_draw_function.values()), "",
     "create_canvas_and_axes(" + ', '.join(
       param_dict_to_str(
@@ -326,12 +319,12 @@ def dump_py_file():
 
 
 def write_file_wrapper(event):
-  write_file(filename_="MY_yyyyy_demo_DUMP.py", contents_func=dump_py_file)
+  write_file(filename_="MY_demo_DUMP.py", contents_func=dump_py_file)
 
 
 _, dump_py_file_button, _ = add_a_button(
-  w_left=plot_ax_left + widget_params['gap'],
-  w_bottom=1 - (widget_params['height'] + 10 * widget_params['gap']),
+  w_left=plot_ax_left + 6 * widget_params['gap'],
+  w_bottom=1 - (widget_params['height'] + 3 * widget_params['gap']),
   w_width=get_default_widget_width(),
   w_caption='Dump Python File',
   on_click_or_change=write_file_wrapper)
@@ -414,10 +407,10 @@ def update_visibility(side, switch_on):
   spec_param_dict = specific_inputs_values_by_shapename[active_shapename[side]]
   current_slider_nb = 0
 
-  for param_name, slider_params in spec_param_dict.items():
+  for param_name in spec_param_dict.keys():
     current_slider_nb -= 1
     current_slider = specific_widgets_by_side[side][current_slider_nb]
-    current_slider.ax.set_visible(switch_on)
+    set_widget_visible(current_slider, switch_on)
     axes_box = current_slider.ax.get_position().bounds
     axes_height = axes_box[3]
     axes_bottom = axes_box[1]
@@ -439,7 +432,7 @@ def update_visibility(side, switch_on):
           active_shapename[side]][param_name] = current_slider.val
 
   for i in range(get_max_specific_sliders() + current_slider_nb):
-    specific_widgets_by_side[side][i].ax.set_visible(False)
+    set_widget_visible(specific_widgets_by_side[side][i], False)
 
   # style widgets visibility
   patch_or_line = get_active_shapetype(side=side)
@@ -449,7 +442,7 @@ def update_visibility(side, switch_on):
       for t in sw_or_all_texts:
         t.set_visible(switch_on)
     else:
-      sw_or_all_texts.ax.set_visible(switch_on)
+      set_widget_visible(sw_or_all_texts, switch_on)
 
 
 ##########################################################################################
@@ -470,7 +463,7 @@ def switch_active_shapename_given_side(label, side):
           for t in sw_or_all_texts:
             t.set_visible(False)
         else:
-          sw_or_all_texts.ax.set_visible(False)
+          set_widget_visible(sw_or_all_texts, False)
 
   active_shapename[side] = label
   update_visibility(side=side, switch_on=True)
@@ -521,7 +514,7 @@ def update_shape_style(_, side, shapetype, argname):
     shapes_by_side_by_shapetype[side]['line'].set_style(**{argname: argvalue})
     shapes_by_side_by_shapetype[side]['patch'].set_style(**{argname: argvalue})
     if argname == 'color':
-      background_rectangle[side].set_facecolor(argvalue)
+      background_rectangle[side].set_facecolor(find_color_code(argvalue))
       hatched_polygon[side].set_color('lightgrey' if argvalue ==
                                       'none' else 'white')
 
@@ -532,9 +525,9 @@ def update_shape_style(_, side, shapetype, argname):
 # create shapestyle widgets
 def place_style_widgets(side, shapetype, arg_category, w_left, w_bottom):
 
-  captions_init_values = my_default_demo_style[side][arg_category]
+  captions_init_values = demo_style[side][arg_category]
   if arg_category not in ['diamond', '']:
-    for key, value in my_default_color_etc_settings[arg_category].items():
+    for key, value in default_color_etc_settings[arg_category].items():
       if key not in captions_init_values:
         if key not in ['color', 'layer_nb'] or arg_category == "outline":
           captions_init_values[key] = value
@@ -626,7 +619,7 @@ def place_shapes_and_widgets(side):
     w_left=rax_left,
     w_bottom=get_demo_rax_bottom(),
     w_caption="shapenames",
-    active_option=my_default_demo_shapes[side])
+    active_option=demo_shapes[side])
 
   shape_switchers[side].on_clicked(
     functools.partial(switch_active_shapename_given_side, side=side))
@@ -695,7 +688,7 @@ def place_shapes_and_widgets(side):
     shapes_by_side_by_shapetype[side][st].set_style(**kwargs_style)
 
   # ... and  switch on those that need to be active!
-  switch_active_shapename_given_side(label=my_default_demo_shapes[side],
+  switch_active_shapename_given_side(label=demo_shapes[side],
                                      side=side)
 
 

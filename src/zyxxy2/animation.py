@@ -1,6 +1,6 @@
 import numpy as np
 from math import floor
-from yyyyy_canvas import show_and_save
+from .canvas import show_and_save
 
     #all_shapes = Shape._get_all_shapes_in_layers()
     #total_init_frames = qty_frames_for_each_visualization * len(all_shapes) + qty_frames_for_move + qty_frames_wait_at_the_end

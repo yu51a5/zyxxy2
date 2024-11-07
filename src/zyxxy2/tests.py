@@ -15,13 +15,14 @@
 ########################################################################
 
 import os, shutil, datetime
-from yyyyy_shape_class import Shape
-from yyyyy_colors import create_gradient_colors
-from yyyyy_utils import is_the_same_point, random_integer_number
-from yyyyy_canvas import set_folder_for_saving, reset_folder_for_saving, _is_running_tests
-from yyyyy_files import compare_images, execute_example_or_module
-import yyyyy_all_EXAMPLES
-from yyyyy_docs import _get_functions_from_a_file
+
+from .shape_class import Shape
+from .colors import create_gradient_colors
+from .utils import is_the_same_point, random_integer_number
+from .canvas import set_folder_for_saving, reset_folder_for_saving, _is_running_tests
+from .files import compare_images, execute_example_or_module
+from . import examples
+from .docs import _get_functions_from_a_file
 
 _ = _is_running_tests(True)
 TEST_FOLDER = "test_files"
@@ -76,7 +77,7 @@ def check_folder(folder_to_check=None):
 all_drawings = [f for f in os.listdir('.') if os.path.isfile(f) and (f.startswith("draw") or f.startswith("demo_"))]
 all_drawings.sort()
 
-all_examples_list =_get_functions_from_a_file(module_=yyyyy_all_EXAMPLES)
+all_examples_list =_get_functions_from_a_file(module_=examples)
 all_examples_list.sort(key=lambda x: x[0])
 
 what_to_test = {"images" : [ae[1] for ae in all_examples_list if 'anima' not in ae[0]], 
@@ -96,9 +97,9 @@ def test_functions_or_modules(folder_name):
 ##################################################################
 n=0
 def test_rectangle():
-  from yyyyy_shape_functions import draw_a_rectangle, clone_a_shape, draw_a_segment, draw_a_rectangle, draw_a_polygon, draw_a_broken_line
-  from yyyyy_canvas import create_canvas_and_axes
-  from yyyyy_utils import is_the_same_contour, conc_contours #, is_the_same_point
+  from .shape_functions import draw_a_rectangle, clone_a_shape, draw_a_segment, draw_a_rectangle, draw_a_polygon, draw_a_broken_line
+  from .canvas import create_canvas_and_axes
+  from .utils import is_the_same_contour, conc_contours #, is_the_same_point
   import numpy as np
 
   axes = create_canvas_and_axes(canvas_width = 18, canvas_height = 12)
@@ -221,9 +222,9 @@ def test_gradient():
 
 print(datetime.datetime.now())
 
-from yyyyy_docs import generate_function_list
-from yyyyy_files import write_file
-write_file(filename_="MY_yyyyy_FUNCTION_REFERENCE.txt", contents_func=generate_function_list)
+from .docs import generate_function_list
+from .files import write_file
+write_file(filename_="MY_FUNCTION_REFERENCE.txt", contents_func=generate_function_list)
 
 test_rectangle(); test_gradient();  
 test_functions_or_modules("images"); check_folder("images");

@@ -16,8 +16,10 @@
 
 from matplotlib.widgets import Slider, RadioButtons, CheckButtons, Button
 import matplotlib.pyplot as plt
-from MY_yyyyy_SETTINGS_widgets import widget_params
-from yyyyy_utils import is_the_same_point
+from matplotlib.collections import PathCollection
+
+from .settings import widget_params
+from .utils import is_the_same_point
 
 ##########################################################################################
 default_widget_sizes = {
@@ -62,8 +64,8 @@ def add_vertical_radio_buttons(w_left, w_bottom, w_caption, rb_options, active_o
   added_text = plt.gcf().text(w_left, new_bottom, w_caption)
   new_bottom += default_widget_sizes['height'] + default_widget_sizes['gap']
 
-  for circle in result.circles: # adjust radius here. The default is 0.05
-    pass # circle.set_radius(widget_params['height']/2.)
+  #for circle in result.circles: # adjust radius here. The default is 0.05
+    #pass # circle.set_radius(widget_params['height']/2.)
 
   if on_click_or_change is not None:
     result.on_clicked(on_click_or_change)
@@ -149,3 +151,11 @@ def reset_widget(a_widget):
       a_widget.set_active(index=0)
   else:
     raise Exception(type(a_widget), "type not recognized")
+  
+##########################################################################################
+def set_widget_visible(a_widget, val):
+  a_widget.ax.set_visible(val)
+  if isinstance(a_widget, RadioButtons):
+    pcs = [ch for ch in a_widget.ax.get_children()  if isinstance(ch, PathCollection) ]
+    for pc in pcs:
+      pc.set_visible(val)

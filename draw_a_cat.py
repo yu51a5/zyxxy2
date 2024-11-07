@@ -1,7 +1,7 @@
 
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_triangle, draw_a_circle, draw_a_crescent, draw_a_segment
-from yyyyy_all_EXAMPLES import nice_cat
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_triangle, draw_a_circle, draw_a_crescent, draw_a_segment
+from zyxxy2 import nice_cat
 
 #######################################################
 # Creating the canvas!                               

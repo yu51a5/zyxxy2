@@ -1,8 +1,11 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_segment, draw_a_circle, draw_an_arc
-from yyyyy_layers import shift_layers, new_layer
-from yyyyy_utils import random_integer_number
-from yyyyy_shape_style import set_default_patch_color, set_default_line_style
+import sys
+sys.path.append('src')
+
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_segment, draw_a_circle, draw_an_arc
+from zyxxy2 import shift_layers, new_layer
+from zyxxy2 import random_integer_number
+from zyxxy2 import set_default_patch_color, set_default_line_style
 
 radius_1 = 0.5
 radius_2 = .5 * radius_1

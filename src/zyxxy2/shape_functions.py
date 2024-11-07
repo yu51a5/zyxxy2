@@ -15,10 +15,11 @@
 ##  GNU General Public License for more details.
 ########################################################################
 
-from yyyyy_shape_class import Shape
 from functools import partial
-import yyyyy_coordinates, sys
-from yyyyy_shape_style import raise_Exception_if_not_processed, get_admissible_style_arguments
+
+from . import coordinates 
+from .shape_style import raise_Exception_if_not_processed, get_admissible_style_arguments
+from .shape_class import Shape
 
 
 ########################################################################
@@ -27,7 +28,7 @@ def draw_a_shape(shapename, **kwargs):
   param_names_used = []
   # create a shape
   if isinstance(shapename, str):
-    shapetype = yyyyy_coordinates.get_type_given_shapename(shapename=shapename)
+    shapetype = coordinates.get_type_given_shapename(shapename=shapename)
   else:
     shapetype = kwargs['shapetype']
     param_names_used += ['shapetype']
@@ -45,14 +46,14 @@ def draw_a_shape(shapename, **kwargs):
   _shape.set_style(**color_etc_kwargs)
   
   if isinstance(shapename, str):
-    admissible_shape_args = [k for k in yyyyy_coordinates.shape_names_params_dicts_definition[shapename].keys()]
+    admissible_shape_args = [k for k in coordinates.shape_names_params_dicts_definition[shapename].keys()]
     allowed_keys += admissible_shape_args
     kwargs_shape = {key : value for key, value in kwargs.items() if key in admissible_shape_args}
   else:
     kwargs_shape = {}
 
   # apply common arguments
-  common_keys_for_shape = yyyyy_coordinates._get_common_keys_for_shape(shapename=shapename, available_arguments=kwargs)
+  common_keys_for_shape = coordinates._get_common_keys_for_shape(shapename=shapename, available_arguments=kwargs)
   kwargs_common = {key : value for key, value in kwargs.items() if key in common_keys_for_shape.values()}
   allowed_keys += [v for v in common_keys_for_shape.values()]
 
@@ -97,5 +98,5 @@ def draw_a_polygon(contour, **kwargs):
 
 ########################################################################
 # autogenerate all other draw_* functions
-for shapename in yyyyy_coordinates.shape_names_params_dicts_definition.keys():
+for shapename in coordinates.shape_names_params_dicts_definition.keys():
   globals()["draw_" + shapename] = partial(draw_a_shape, shapename=shapename)

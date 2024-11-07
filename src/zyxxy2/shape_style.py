@@ -16,8 +16,9 @@
 
 import copy
 import matplotlib.pyplot as plt
-from MY_yyyyy_SETTINGS_general import my_default_color_etc_settings, my_default_text_bubble_params, my_default_diamond_size, default_outlines_width, default_extreme_layer_nb, screen_zoom
-from yyyyy_colors import find_color_code
+
+from .settings import default_color_etc_settings, default_text_bubble_params, default_diamond_size, default_outlines_width, default_extreme_layer_nb, screen_zoom
+from .colors import find_color_code
 
 ########################################################################
 
@@ -42,8 +43,8 @@ def set_default_diamond_size_factor(value=1.):
   __diamond_size_factor = float(value)
 
 
-default_color_etc_settings = copy.deepcopy(my_default_color_etc_settings)
-default_text_bubble_params = copy.deepcopy(my_default_text_bubble_params)
+default_color_etc_settings = copy.deepcopy(default_color_etc_settings)
+default_text_bubble_params = copy.deepcopy(default_text_bubble_params)
 
 def get_default_text_bubble_params(name):
   return default_text_bubble_params[name]
@@ -54,8 +55,8 @@ def scale_default_fontsize(mult):
 
 def reset_default_color_etc_settings(diamond_size_factor_override=1):
   global default_color_etc_settings, default_text_bubble_params, __diamond_size_factor
-  default_color_etc_settings = copy.deepcopy(my_default_color_etc_settings)
-  default_text_bubble_params = copy.deepcopy(my_default_text_bubble_params)
+  default_color_etc_settings = copy.deepcopy(default_color_etc_settings)
+  default_text_bubble_params = copy.deepcopy(default_text_bubble_params)
   __diamond_size_factor = diamond_size_factor_override
 
 
@@ -79,7 +80,7 @@ def get_default_color_etc_settings():
 
 def get_diamond_size(ax=None):
   ax = _get_axes(ax=ax)
-  return get_canvas_width(ax=ax) * my_default_diamond_size * __diamond_size_factor
+  return get_canvas_width(ax=ax) * default_diamond_size * __diamond_size_factor
 
 
 ########################################################################

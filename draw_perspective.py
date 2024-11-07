@@ -1,6 +1,6 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_polygon, draw_a_broken_line, draw_a_triangle, draw_a_circle
-from yyyyy_layers import new_layer
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_polygon, draw_a_broken_line, draw_a_triangle, draw_a_circle
+from zyxxy2 import new_layer
 
 #######################################################
 # Creating the canvas!                               

@@ -14,15 +14,16 @@
 ##  GNU General Public License for more details.
 ########################################################################
 
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_circle, draw_a_rectangle, draw_a_broken_line, draw_a_polygon, clone_a_shape, draw_a_smile
-from yyyyy_word_bubbles import draw_a_speech_bubble
-from yyyyy_shape_style import scale_default_fontsize, get_canvas_height, get_canvas_width, set_default_linewidth
-from yyyyy_coordinates import shape_names_params_dicts_definition, get_type_given_shapename, build_a_smile, build_a_zigzag
-from demo_yyyyy_shape_helper import slider_range
 import numpy as np
 from random import random, randint
-from yyyyy_layers import new_layer, shift_layers, turn_layers
+
+from .canvas import create_canvas_and_axes, show_and_save
+from .shape_functions import draw_a_circle, draw_a_rectangle, draw_a_broken_line, draw_a_polygon, clone_a_shape, draw_a_smile
+from .word_bubbles import draw_a_speech_bubble
+from .shape_style import scale_default_fontsize, get_canvas_height, get_canvas_width, set_default_linewidth
+from .coordinates import shape_names_params_dicts_definition, get_type_given_shapename, build_a_smile, build_a_zigzag
+from .settings import slider_range
+from .layers import new_layer, shift_layers, turn_layers
 
 smile = build_a_smile(width=3, depth=0.5)
 zigzag = build_a_zigzag(width=3, height=0.5, angle_start=-3, nb_segments=6)
@@ -36,9 +37,9 @@ shape_names_params_dicts_definition_plus.update({'a_polygon' : {}, 'a_broken_lin
 gap, text_height, shape_height = 1, 1.5, 5.5
 create_canvas_and_axes(canvas_width=71, canvas_height=53)
 
-sb = draw_a_speech_bubble(text='Run demo_yyyyy_shape.py to see how the shape parameters work!', 
+sb = draw_a_speech_bubble(text='Run demo_shape.py to see how the shape parameters work!', 
                           x=get_canvas_width()/2, y=gap, position='cb', 
-                          fontsize=15, background_color='plum')
+                          fontsize=10, background_color='plum')
 
 titles_bottom = sb.top+5*gap+2*(text_height+shape_height)
 titles_top = titles_bottom + 6

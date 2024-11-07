@@ -1,8 +1,8 @@
-from yyyyy_canvas import create_canvas_and_axes, wait_for_enter
-from yyyyy_utils import atan, random_integer_number, calc_Pythagoras
-from yyyyy_shape_functions import draw_a_square, clone_a_shape, draw_a_polygon
+from zyxxy2 import create_canvas_and_axes, wait_for_enter
+from zyxxy2 import atan, random_integer_number, calc_Pythagoras
+from zyxxy2 import draw_a_square, clone_a_shape, draw_a_polygon
 import matplotlib.pyplot as plt
-from MY_yyyyy_SETTINGS_general import my_default_font_sizes
+from zyxxy2.settings import default_font_sizes
 
 #######################################################
 # Creating the canvas!                               ##
@@ -13,7 +13,7 @@ create_canvas_and_axes(canvas_width = 20,
                               title = "Pythagoras Puzzle",
                               diamond_color = "black")
 
-header_txts = [plt.text(x=plt.gca().get_xlim()[0]+1.5, y=plt.gca().get_ylim()[1]-i*1.53, s="", fontdict={'size': my_default_font_sizes['title']/2}) for i in range(1, 4)]
+header_txts = [plt.text(x=plt.gca().get_xlim()[0]+1.5, y=plt.gca().get_ylim()[1]-i*1.53, s="", fontdict={'size': default_font_sizes['title']/2}) for i in range(1, 4)]
 
 #######################################################
 

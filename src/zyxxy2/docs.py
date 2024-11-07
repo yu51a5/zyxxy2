@@ -15,7 +15,7 @@
 ########################################################################
 
 import inspect 
-import yyyyy_shape_style, yyyyy_coordinates, yyyyy_shape_class
+from . import examples, shape_style, coordinates, shape_class
 
 ##################################################################
 def _get_functions_from_a_file(module_):
@@ -77,20 +77,20 @@ def get_shape_creating_functions(shapetype):
       return ["clone_a_shape(init_shape)"]
 
     result = []
-    for shapename, params in yyyyy_coordinates.shape_names_params_dicts_definition.items():
-      if (shapename in yyyyy_coordinates.yyyyy_line_shapes) != (shapetype == "line"):
+    for shapename, params in coordinates.shape_names_params_dicts_definition.items():
+      if (shapename in coordinates.line_shapes) != (shapetype == "line"):
         continue
-      if shapename not in yyyyy_coordinates.bespoke_diamonds:
+      if shapename not in coordinates.bespoke_diamonds:
         ds = "center_x, center_y"
-      elif isinstance(yyyyy_coordinates.bespoke_diamonds[shapename], str):
-        d = yyyyy_coordinates.bespoke_diamonds[shapename]
+      elif isinstance(coordinates.bespoke_diamonds[shapename], str):
+        d = coordinates.bespoke_diamonds[shapename]
         ds = d + "_x, " + d + "_y"
       else:
-        ds =  ", ".join([str(d) for d in yyyyy_coordinates.bespoke_diamonds[shapename]])
+        ds =  ", ".join([str(d) for d in coordinates.bespoke_diamonds[shapename]])
       result += ["draw_" + shapename + "(" + ds + ', ' + ", ".join([k for k in params.keys()]) + ')']
 
     result += ["draw_" + ("a_broken_line" if shapetype == "line" else "a_polygon" ) + "(diamond_x, diamond_y, contour)"]
-    result += ["", "Admissible Style Arguments:"] + ['  ' + ', '.join(yyyyy_shape_style.get_admissible_style_arguments(shapetype))]
+    result += ["", "Admissible Style Arguments:"] + ['  ' + ', '.join(shape_style.get_admissible_style_arguments(shapetype))]
     result += ["", "Admissible Movement Arguments:"] + ['  ' + ', '.join(["turn", "stretch", "stretch_direction (optional)"])]
 
     return result
@@ -112,7 +112,7 @@ def get_functions_subsection(title, module, func_list_function_override=None, im
 
 def get_Shape_members():
     result = []
-    shape_methods = _get_members_of_a_class(yyyyy_shape_class.Shape)
+    shape_methods = _get_members_of_a_class(shape_class.Shape)
     for sf, sf_obj in shape_methods:
       result += _function_with_comments_and_arguments(f_name=sf, f_object=sf_obj, class_name="Shape")
     return result
@@ -120,11 +120,11 @@ def get_Shape_members():
 def get_style_functions():
     result = []
     for shapetype in ["line", "patch"]:
-      asa = yyyyy_shape_style.get_admissible_style_arguments(shapetype)
+      asa = shape_style.get_admissible_style_arguments(shapetype)
       result += ["set_default_" + shapetype + '_style(' + ', '.join(asa) + ')']
-    result += ['set_default_outline_style(' + ', '.join(yyyyy_shape_style.line_arg_types) + ')', ""]
+    result += ['set_default_outline_style(' + ', '.join(shape_style.line_arg_types) + ')', ""]
 
-    style_functions = _get_functions_from_a_file(module_=yyyyy_shape_style)
+    style_functions = _get_functions_from_a_file(module_=shape_style)
     style_functions = [sf for sf in style_functions if sf[0].startswith("set_default_") and not sf[0].endswith('_style')]
     for sf in style_functions:
       if 'layer_nb' in sf[0]:
@@ -134,7 +134,7 @@ def get_style_functions():
     return result
 
 def generate_function_list():
-  import yyyyy_utils, yyyyy_colors, yyyyy_layers, yyyyy_shape_functions, yyyyy_all_EXAMPLES
+  from . import utils, colors, layers, shape_functions
   from functools import partial
 
   func_ref_cont = []
@@ -144,18 +144,18 @@ def generate_function_list():
     else: 
       title="Functions That Create " + ("Lines" if shapetype == "line" else "Patches")
     func_ref_cont += get_functions_subsection(title=title,
-                                              module=yyyyy_shape_functions,
+                                              module=shape_functions,
                                               func_list_function_override=partial(get_shape_creating_functions, shapetype=shapetype))
-  func_ref_cont  += ( get_functions_subsection(title="Layer-Related Functions", module=yyyyy_layers)
+  func_ref_cont  += ( get_functions_subsection(title="Layer-Related Functions", module=layers)
                     + get_functions_subsection(title="Default Shape Style-Related Functions", 
-                                               module=yyyyy_shape_style,
+                                               module=shape_style,
                                                func_list_function_override=get_style_functions)
-                    + get_functions_subsection(title="Utility Functions", module=yyyyy_utils)
+                    + get_functions_subsection(title="Utility Functions", module=utils)
                     + get_functions_subsection(title="Default Shape Style-Related Functions", 
-                                               module=yyyyy_shape_class, import_needed=False,
+                                               module=shape_class, import_needed=False,
                                                func_list_function_override=get_Shape_members)
-                    + get_functions_subsection(title="color-Related Functions", module=yyyyy_colors))
+                    + get_functions_subsection(title="color-Related Functions", module=colors))
 
   func_ref_cont += get_functions_subsection(title="Functions That Create Examples",
-                                              module=yyyyy_all_EXAMPLES)
+                                              module=examples)
   return func_ref_cont

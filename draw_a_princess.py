@@ -1,7 +1,9 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_sector, draw_a_wave, draw_an_ellipse, draw_an_arc, draw_a_triangle, \
+import sys; sys.path.append('src')
+
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_sector, draw_a_wave, draw_an_ellipse, draw_an_arc, draw_a_triangle, \
                                   draw_an_egg, draw_a_segment, draw_a_smile, draw_a_crescent, draw_a_square, draw_a_star
-from yyyyy_layers import new_layer, turn_layers
+from zyxxy2 import new_layer, turn_layers
 
 skin_color = 'beige'
 dress_color = 'hotpink'

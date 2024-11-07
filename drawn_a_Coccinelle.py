@@ -1,7 +1,7 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_sector, draw_a_circle, draw_an_arc
-from yyyyy_utils import asin
-from yyyyy_animation import show_and_save_basic_animation
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_sector, draw_a_circle, draw_an_arc
+from zyxxy2 import asin
+from zyxxy2 import show_and_save_basic_animation
 
 # based on https://www.pinterest.com/pin/701013498245673792/
 # colors are identified using https://html-color-codes.info/colors-from-image/#

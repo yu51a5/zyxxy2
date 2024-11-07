@@ -1,5 +1,5 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_rectangle, draw_a_broken_line, draw_a_circle, draw_a_segment
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_rectangle, draw_a_broken_line, draw_a_circle, draw_a_segment
 
 #######################################################
 # Creating the canvas!                               

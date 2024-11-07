@@ -16,19 +16,19 @@
 
 import matplotlib.pyplot as plt
 
-from yyyyy_canvas import show_demo, prepare_axes
-from MY_yyyyy_SETTINGS_demo import figure_params
-from MY_yyyyy_SETTINGS_widgets import widget_params
-from MY_yyyyy_SETTINGS_general import my_default_display_params, my_default_font_sizes, my_default_image_params
-from yyyyy_shape_functions import draw_a_square
-from yyyyy_widgets import add_a_slider, get_widget_value
+from zyxxy2 import show_demo, prepare_axes
+from zyxxy2.settings import figure_params
+from zyxxy2.settings import widget_params
+from zyxxy2.settings import default_display_params, default_font_sizes, default_image_params
+from zyxxy2 import draw_a_square
+from zyxxy2 import add_a_slider, get_widget_value
 
-plt.rcParams.update({'font.size': my_default_font_sizes['axes_label']})
+plt.rcParams.update({'font.size': default_font_sizes['axes_label']})
                          
 ##########################################################################################
 # create the figure
-f_size = min(my_default_display_params['max_figsize'])
-fig = plt.figure(figsize=(f_size/1.10, f_size), dpi=my_default_image_params['dpi']) 
+f_size = min(default_display_params['max_figsize'])
+fig = plt.figure(figsize=(f_size/1.10, f_size), dpi=default_image_params['dpi']) 
 
 plot_ax_bottom = 3 * (widget_params['height'] + widget_params['gap']) + figure_params['plot_bottom_gap'] + 0.05 * 2
 plot_ax_left = (1 - (1 - plot_ax_bottom) * fig.get_size_inches()[1] / fig.get_size_inches()[0]) / 2.
@@ -72,8 +72,8 @@ slider_bottom += .05
 ax = plt.axes([plot_ax_left, slider_bottom, 1 - 2 * plot_ax_left, 1 - plot_ax_bottom])
 
 prepare_axes(ax=ax, canvas_width=base, canvas_height=base, tick_step_x=1, tick_step_y=1,
-                            axes_label_font_size=my_default_font_sizes['axes_label'],
-                            axes_tick_font_size=my_default_font_sizes['axes_label'],
+                            axes_label_font_size=default_font_sizes['axes_label'],
+                            axes_tick_font_size=default_font_sizes['axes_label'],
                             background_color='#EEEEEE')
 
 squares = [[draw_a_square(left=x, bottom=y, side=1, color='superBlue', outline_linewidth=5) 

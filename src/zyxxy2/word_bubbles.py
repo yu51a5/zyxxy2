@@ -16,11 +16,12 @@
 
 import numpy as np
 from matplotlib.transforms import Bbox
-from yyyyy_shape_style import _get_axes, get_default_text_bubble_params, get_linewidth_factor
-from yyyyy_utils import atan, calc_Pythagoras
-from yyyyy_shape_functions import draw_a_triangle
-from yyyyy_colors import find_color_code
-from yyyyy_bbox import ObjPosition
+
+from .shape_style import _get_axes, get_default_text_bubble_params, get_linewidth_factor
+from .utils import atan, calc_Pythagoras
+from .shape_functions import draw_a_triangle
+from .colors import find_color_code
+from .bbox import ObjPosition
 
 ##################################################################
 ## TEXT                                                         ## 

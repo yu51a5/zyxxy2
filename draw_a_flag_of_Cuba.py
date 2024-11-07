@@ -1,7 +1,7 @@
 
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_all_EXAMPLES import example_cuban_flag
-from yyyyy_shape_functions import draw_a_triangle, draw_a_rectangle, draw_a_star
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import example_cuban_flag
+from zyxxy2 import draw_a_triangle, draw_a_rectangle, draw_a_star
 
 #######################################################
 # Creating the canvas!                               ##

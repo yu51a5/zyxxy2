@@ -1,6 +1,6 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_circle,draw_a_square,draw_a_star
-from yyyyy_utils import random_number
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_circle,draw_a_square,draw_a_star
+from zyxxy2 import random_number
 ball_radius = 0.5
 linewidth = 2
 

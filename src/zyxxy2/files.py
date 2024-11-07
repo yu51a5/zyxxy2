@@ -9,7 +9,7 @@ import urllib.request
 import os.path
 import gc, time, types, functools, importlib.machinery
 
-from yyyyy_utils import fix_random_seed
+from .utils import fix_random_seed
 
 headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0' }
 

@@ -26,17 +26,17 @@ from matplotlib.text import Text
 import matplotlib.pyplot as plt
 from collections.abc import Iterable
 
-from yyyyy_shape_style import set_default_diamond_size_factor, set_trace_color, set_trace_diamond_color, \
+from .shape_style import set_default_diamond_size_factor, set_trace_color, set_trace_diamond_color, \
   find_color_code, reset_default_color_etc_settings, set_default_diamond_color, \
   set_default_color_etc_settings, get_default_color_etc_settings
-from yyyyy_shape_class import Shape
-from yyyyy_word_bubbles import WordBubble
-from yyyyy_files import filename_to_image, show_image
-from yyyyy_utils import equal_or_almost
-from MY_yyyyy_SETTINGS_general import my_default_font_sizes, my_default_display_params, my_default_image_params, my_default_animation_params, my_default_images_folder
+from .shape_class import Shape
+from .word_bubbles import WordBubble
+from .files import filename_to_image, show_image
+from .utils import equal_or_almost
+from .settings import default_font_sizes, default_display_params, default_image_params, default_animation_params, default_images_folder
 
 USE_PLT_SHOW = True
-IMAGES_FOLDER = my_default_images_folder
+IMAGES_FOLDER = default_images_folder
 SLIDE_OR_FRAME_NUMBER = None
 INSIDE_ANIMATION = False
 WOULD_BE_AXES_LIMITS = None
@@ -204,9 +204,9 @@ def prepare_axes(ax,
                  aspect=1,
                  tick_step_x=None,
                  tick_step_y=None,
-                 title_font_size=my_default_font_sizes['title'],
-                 axes_label_font_size=my_default_font_sizes['axes_label'],
-                 axes_tick_font_size=my_default_font_sizes['axes_tick'],
+                 title_font_size=default_font_sizes['title'],
+                 axes_label_font_size=default_font_sizes['axes_label'],
+                 axes_tick_font_size=default_font_sizes['axes_tick'],
                  title_pad=0,
                  add_border=True,
                  title=None,
@@ -339,15 +339,15 @@ def create_canvas_and_axes(
     add_border=True,
     title=None,
     inspiration_addon=None,
-    title_pad=my_default_display_params['title_pad'],
-    xlabel=my_default_display_params['x_axis_label'],
-    ylabel=my_default_display_params['y_axis_label'],
-    title_font_size=my_default_font_sizes['title'],
-    axes_label_font_size=my_default_font_sizes['axes_label'],
-    axes_tick_font_size=my_default_font_sizes['axes_tick'],
-    max_figsize=my_default_display_params['max_figsize'],
-    dpi=my_default_image_params['dpi'],
-    min_margin=my_default_display_params['min_margin'],
+    title_pad=default_display_params['title_pad'],
+    xlabel=default_display_params['x_axis_label'],
+    ylabel=default_display_params['y_axis_label'],
+    title_font_size=default_font_sizes['title'],
+    axes_label_font_size=default_font_sizes['axes_label'],
+    axes_tick_font_size=default_font_sizes['axes_tick'],
+    max_figsize=default_display_params['max_figsize'],
+    dpi=default_image_params['dpi'],
+    min_margin=default_display_params['min_margin'],
     figure_aspect=None,  # height to width
     model=None,
     model_zoom=1.,
@@ -566,7 +566,7 @@ def set_folder_for_saving(folder_name):
 
 def reset_folder_for_saving():
   global IMAGES_FOLDER
-  IMAGES_FOLDER = my_default_images_folder
+  IMAGES_FOLDER = default_images_folder
 
 
 ##################################################################
@@ -579,7 +579,7 @@ def __get_output_filename_and_format(filename=None, image_format=None):
     else:
       curframe = inspect.currentframe()
       caller_filename = inspect.getouterframes(curframe)[2].filename  #1
-    if caller_filename == "yyyyy_all_EXAMPLES.py":
+    if caller_filename == "all_examples.py":
       filename = frame.function
     else:
       filename = caller_filename
@@ -598,7 +598,7 @@ def __get_output_filename_and_format(filename=None, image_format=None):
       filename = filename[:last_dot_position]
 
   if image_format is None or image_format == "":
-    image_format = my_default_image_params['format']
+    image_format = default_image_params['format']
 
   return filename, image_format
 
@@ -613,12 +613,12 @@ def __get_output_filename_and_format(filename=None, image_format=None):
 def show_and_save(save=True,
                   filename=None,
                   image_format=None,
-                  animation_interval=my_default_animation_params['interval'],
-                  animation_blit=my_default_animation_params['blit'],
-                  animation_repeat=my_default_animation_params['repeat'],
-                  animation_FPS=my_default_animation_params['FPS'],
-                  animation_writer=my_default_animation_params['writer'],
-                  animation_format=my_default_animation_params['format'],
+                  animation_interval=default_animation_params['interval'],
+                  animation_blit=default_animation_params['blit'],
+                  animation_repeat=default_animation_params['repeat'],
+                  animation_FPS=default_animation_params['FPS'],
+                  animation_writer=default_animation_params['writer'],
+                  animation_format=default_animation_params['format'],
                   animation_func=None,
                   animation_init=None,
                   nb_of_frames=None,

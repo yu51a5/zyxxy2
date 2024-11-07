@@ -14,9 +14,9 @@
 ##  GNU General Public License for more details.
 ########################################################################
 
-from yyyyy_shape_style import set_default_layer_nb, get_top_layer_nb
-from yyyyy_shape_class import Shape
-from yyyyy_word_bubbles import WordBubble
+from .shape_style import set_default_layer_nb, get_top_layer_nb
+from .shape_class import Shape
+from .word_bubbles import WordBubble
 
 ########################################################################
 # adding new layers

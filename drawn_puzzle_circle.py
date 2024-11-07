@@ -1,6 +1,6 @@
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_circle
-from yyyyy_utils import sin, cos
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_circle
+from zyxxy2 import sin, cos
 import numpy as np
 
 #######################################################

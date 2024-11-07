@@ -1,12 +1,12 @@
 import numpy as np
-from yyyyy_canvas import create_canvas_and_axes, show_and_save, draw_and_keep_drawing
-from yyyyy_shape_style import set_default_text_style, set_default_linewidth, set_default_patch_style, set_default_outline_style, set_default_line_style, get_canvas_height, get_canvas_width
-from yyyyy_shape_functions import draw_an_egg, draw_a_drop, draw_a_circle, draw_a_square, draw_a_triangle, draw_an_ellipse, draw_a_rectangle, draw_a_smile, draw_a_segment, draw_a_sector, draw_a_polygon, draw_a_broken_line, draw_a_crescent, draw_a_star
-from yyyyy_coordinates import build_an_arc, link_contours, build_a_circle, build_a_zigzag
-from yyyyy_layers import shift_layers, turn_layers, stretch_layers, new_layer, new_layer_outline_behind
-from yyyyy_utils import random_element, random_number, full_turn_angle, cos, sin, find_GCD, turn
-from yyyyy_colors import create_gradient_colors, get_color_tint
-from yyyyy_word_bubbles import draw_a_speech_bubble
+from .canvas import create_canvas_and_axes, show_and_save, draw_and_keep_drawing
+from .shape_style import set_default_text_style, set_default_linewidth, set_default_patch_style, set_default_outline_style, set_default_line_style, get_canvas_height, get_canvas_width
+from .shape_functions import draw_an_egg, draw_a_drop, draw_a_circle, draw_a_square, draw_a_triangle, draw_an_ellipse, draw_a_rectangle, draw_a_smile, draw_a_segment, draw_a_sector, draw_a_polygon, draw_a_broken_line, draw_a_crescent, draw_a_star
+from .coordinates import build_an_arc, link_contours, build_a_circle, build_a_zigzag
+from .layers import shift_layers, turn_layers, stretch_layers, new_layer, new_layer_outline_behind
+from .utils import random_element, random_number, full_turn_angle, cos, sin, find_GCD, turn
+from .colors import create_gradient_colors, get_color_tint
+from .word_bubbles import draw_a_speech_bubble
 
 #########################################################
 ## THE FLAGS                                           ##
@@ -136,8 +136,8 @@ def example_penguins():
   # head
   draw_a_circle(center_x=60, center_y=80, radius=15, color='black')
   # eyes
-  draw_a_circle(center_x=55, center_y=85, radius=3, color=None, outline_color='white', outline_linewidth=2)
-  draw_a_circle(center_x=65, center_y=85, radius=3, color=None, outline_color='white', outline_linewidth=2)
+  draw_a_circle(center_x=55, center_y=85, radius=3, color=None, outline_color='white', outline_linewidth=5)
+  draw_a_circle(center_x=65, center_y=85, radius=3, color=None, outline_color='white', outline_linewidth=5)
   # beck
   draw_a_sector(center_x=58, center_y=76, angle_start=0, angle_end=3, radius=6, stretch_coeff=1.5, stretch_direction=3, turn=0.5, color='orangered')
 
@@ -155,7 +155,7 @@ def example_penguins():
   # head
   draw_a_circle(center_x=270, center_y=80, radius=15, color='black')
   # an eye
-  draw_a_circle(center_x=263, center_y=85, radius=3, color=None, outline_color='white', outline_linewidth=2)
+  draw_a_circle(center_x=263, center_y=85, radius=3, color=None, outline_color='white', outline_linewidth=5)
   set_default_text_style(linewidth=5, fontsize=20, triangle_width=8)
   draw_a_speech_bubble(text="Where is fish?", x=180, y=120, start=[240, 85], background_color='white', name='text_right', position='lt')
   draw_a_speech_bubble(text="I don't know...",x=140, y=120, start=[ 82, 85], background_color='white', name='text_left', position='rt')

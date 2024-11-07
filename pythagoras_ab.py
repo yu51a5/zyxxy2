@@ -1,10 +1,11 @@
-import sys; sys.path.insert(0, '.') 
-from yyyyy_shape_functions import draw_a_segment
-from yyyyy_canvas import create_canvas_and_axes, show_and_save
-from yyyyy_shape_functions import draw_a_polygon, draw_a_square, draw_a_rectangle
+import sys; sys.path.append('src')
+
+from zyxxy2 import draw_a_segment
+from zyxxy2 import create_canvas_and_axes, show_and_save
+from zyxxy2 import draw_a_polygon, draw_a_square, draw_a_rectangle
 from math import sqrt
-from yyyyy_shape_style import set_default_linewidth
-from yyyyy_utils import atan, random_integer_number
+from zyxxy2 import set_default_linewidth
+from zyxxy2 import atan, random_integer_number
 from matplotlib.lines import Line2D
 import matplotlib.pyplot as plt
 import numpy as np

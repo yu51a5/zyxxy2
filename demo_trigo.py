@@ -14,24 +14,25 @@
 ##  GNU General Public License for more details.
 ########################################################################
 
+import sys; sys.path.append('src')
+
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-from yyyyy_utils import full_turn_angle, sin, cos
-from yyyyy_canvas import show_demo, prepare_axes, place_axes_on_axes
-from MY_yyyyy_SETTINGS_demo import figure_params
-from MY_yyyyy_SETTINGS_widgets import widget_params
-from MY_yyyyy_SETTINGS_general import my_default_display_params, my_default_font_sizes, my_default_image_params
-from yyyyy_shape_functions import draw_a_circle, draw_a_segment, draw_a_sector, draw_a_wave, draw_an_ellipse, draw_a_rectangle
-from yyyyy_shape_style import set_default_line_style
-from yyyyy_widgets import add_a_slider
+from zyxxy2 import full_turn_angle, sin, cos
+from zyxxy2 import show_demo, prepare_axes, place_axes_on_axes
+from zyxxy2.settings import demo_figure_params, widget_params
+from zyxxy2.settings import default_display_params, default_font_sizes, default_image_params
+from zyxxy2 import draw_a_circle, draw_a_segment, draw_a_sector, draw_a_wave, draw_an_ellipse, draw_a_rectangle
+from zyxxy2 import set_default_line_style
+from zyxxy2 import add_a_slider
 
-plt.rcParams.update({'font.size': my_default_font_sizes['axes_label']})
+plt.rcParams.update({'font.size': default_font_sizes['axes_label']})
                          
 ##########################################################################################
 # create the figure
-f_size = min(my_default_display_params['max_figsize'])
-fig = plt.figure(figsize=(f_size, f_size), dpi=my_default_image_params['dpi']) 
+f_size = min(default_display_params['max_figsize'])
+fig = plt.figure(figsize=(f_size, f_size), dpi=default_image_params['dpi']) 
 
 ##########################################################################################
 # Creating the canvas!
@@ -39,12 +40,12 @@ fig = plt.figure(figsize=(f_size, f_size), dpi=my_default_image_params['dpi'])
 
 def get_demo_rax_bottom():
   demo_rax_bottom = 1 * (widget_params['height'] + widget_params['gap']) 
-  demo_rax_bottom += figure_params['plot_bottom_gap']
+  demo_rax_bottom += demo_figure_params['plot_bottom_gap']
   return demo_rax_bottom
 
 canvas_width, canvas_height = 11, 11
 
-plot_ax_bottom = get_demo_rax_bottom() + figure_params['plot_bottom_gap'] + 0.1
+plot_ax_bottom = get_demo_rax_bottom() + demo_figure_params['plot_bottom_gap'] + 0.1
 plot_ax_left = (1 - (1 - plot_ax_bottom) * canvas_width / canvas_height * fig.get_size_inches()[1] / fig.get_size_inches()[0]) / 2.
 
 assert plot_ax_left > 0
@@ -53,11 +54,11 @@ ax = plt.axes([plot_ax_left, plot_ax_bottom, 1 - 2 * plot_ax_left, 1 - plot_ax_b
 
 prepare_axes(ax=ax, canvas_width=canvas_width,
                             canvas_height=canvas_height, 
-                            tick_step_x=figure_params['tick_step'],
-                            tick_step_y=figure_params['tick_step'],
+                            tick_step_x=demo_figure_params['tick_step'],
+                            tick_step_y=demo_figure_params['tick_step'],
                             bottom_left_coords=[2-canvas_width, 2-canvas_height],
-                            axes_label_font_size=my_default_font_sizes['axes_label'],
-                            axes_tick_font_size=my_default_font_sizes['axes_label'],
+                            axes_label_font_size=default_font_sizes['axes_label'],
+                            axes_tick_font_size=default_font_sizes['axes_label'],
                             background_color='#EEEEEE')
 
 color = {'angle' : 'violet', 'sine' : 'dodgerblue', 'cosine' : 'blueviolet', 'hypothenuse' : 'crimson', 'connector' : 'black'}
@@ -80,8 +81,8 @@ ax_cos = place_axes_on_axes(ax_parent=ax, ax_parent_absolute=ax_box_on_figure, n
 prepare_axes(ax=ax_cos, canvas_width=ax_cos_box['width']*wave_factor, canvas_height=ax_cos_box['height'], 
                         make_symmetric='y', aspect=wave_factor, xlabel='angle', ylabel='cos(angle)',
                         tick_step_x=2, tick_step_y=0.5, 
-                        axes_label_font_size=my_default_font_sizes['axes_label'],
-                        axes_tick_font_size=my_default_font_sizes['axes_label']/1.5, background_color="white", add_border=True)
+                        axes_label_font_size=default_font_sizes['axes_label'],
+                        axes_tick_font_size=default_font_sizes['axes_label']/1.5, background_color="white", add_border=True)
 
 draw_a_segment(start=[-start_trigo, -paperband_width/2], length=paperband_width, turn=0, color="dimgrey")
 
@@ -91,8 +92,8 @@ ax_sin = place_axes_on_axes(ax_parent=ax, ax_parent_absolute=ax_box_on_figure, n
 prepare_axes(ax=ax_sin, canvas_width=ax_sin_box['width'], canvas_height=ax_sin_box['height']*wave_factor, 
                         make_symmetric='x', aspect=1/wave_factor, ylabel='angle', xlabel='sin(angle)',
                         tick_step_y=2, tick_step_x=0.5, 
-                        axes_label_font_size=my_default_font_sizes['axes_label'],
-                        axes_tick_font_size=my_default_font_sizes['axes_label']/1.5,
+                        axes_label_font_size=default_font_sizes['axes_label'],
+                        axes_tick_font_size=default_font_sizes['axes_label']/1.5,
                         background_color="white", add_border=True)
 
 draw_a_segment(start=[-paperband_width/2, -start_trigo], length=paperband_width, turn=3, color="dimgrey")
@@ -166,7 +167,7 @@ def change_angle(angle):
 
 init_angle = 0
 
-slider = add_a_slider(w_left=plot_ax_left+.2, w_bottom=figure_params['plot_bottom_gap'], w_width=0.5, w_caption='angle', s_vals=[0, max_angle, init_angle, 0.2], on_click_or_change=change_angle)
+slider = add_a_slider(w_left=plot_ax_left+.2, w_bottom=demo_figure_params['plot_bottom_gap'], w_width=0.5, w_caption='angle', s_vals=[0, max_angle, init_angle, 0.2], on_click_or_change=change_angle)
 
 change_angle(angle=init_angle)
 
