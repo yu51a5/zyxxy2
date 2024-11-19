@@ -1,6 +1,7 @@
 import numpy as np
-from matplotlib.colors import is_color_like, to_rgb
+from matplotlib.colors import to_rgb
 from math import floor
+from collections.abc import Iterable
 
 from .settings import my_color_palette
 from .utils import find_LCM, get_sign, is_the_same_point, is_a_number
@@ -16,9 +17,14 @@ def find_color_code(color_name):
     return np.array(to_rgb(my_color_palette[color_name]))
   if is_a_number(color_name):
     return find_color_code([color_name, color_name, color_name])
-  if not is_color_like(color_name):
-    raise Exception(color_name, "is not a valid color!")
-  return np.array(to_rgb(color_name))
+  if isinstance(color_name, Iterable) and (len(color_name) == 3):
+    try:
+      return np.array(to_rgb(np.array(color_name)/255.))
+    except:
+      pass
+  if isinstance(color_name, str):
+    return np.array(to_rgb(color_name))
+  raise Exception(f"{color_name} is not a valid color!")
 
 ##################################################################
 def colors_are_equal(color_1, color_2):
@@ -51,11 +57,11 @@ def create_gradient_colors(rgb_start, rgb_end, nb_steps=None):
 
   rgb_start_, rgb_end_ = find_color_code(rgb_start), find_color_code(rgb_end)
 
-  if nb_steps <= 1:
+  if (nb_steps is not None) and (nb_steps <= 1):
     return [rgb_end_]
 
   if nb_steps is None:
-    nb_steps_per_channel = [int(abs(rgb_start_elem - rgb_end_elem)+1) for rgb_start_elem, rgb_end_elem in zip(rgb_start_, rgb_end_)]
+    nb_steps_per_channel = [int(abs(rgb_start_elem - rgb_end_elem)*255+1) for rgb_start_elem, rgb_end_elem in zip(rgb_start_, rgb_end_)]
 
     nb_steps = 1
     for nspc in nb_steps_per_channel:
@@ -65,14 +71,11 @@ def create_gradient_colors(rgb_start, rgb_end, nb_steps=None):
     for i, (nspc, rgb_s, rgb_e) in enumerate(zip(nb_steps_per_channel, rgb_start_, rgb_end_)):
       size_of_the_step = int(nb_steps / nspc)
       for j in range(nspc):
-        result[j*size_of_the_step : (j+1)*size_of_the_step, i] += get_sign(rgb_e-rgb_s) * j
+        result[j*size_of_the_step : (j+1)*size_of_the_step, i] += get_sign(rgb_e-rgb_s) * j / 255.
 
-    result /= 255.
   else:
     rgb_start_np, rgb_end_np = np.array(rgb_start_, dtype=np.float64), np.array(rgb_end_, dtype=np.float64)
     result = [(i*rgb_end_np + (nb_steps-1-i)*rgb_start_np)/(nb_steps-1) for i in range(nb_steps)]
-    if np.max([rgb_start_np, rgb_end_np]) > 1:
-      result = [r / 255. for r in result]
 
   return result
 

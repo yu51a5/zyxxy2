@@ -2,7 +2,7 @@
 ##############################################################################
 
 Functions That Create Patches
-from zyxxy2 import
+from zyxxy2.shape_functions import
 
 draw_a_triangle(tip_x, tip_y, width, height)
 draw_a_square(['left', 'right'], ['bottom', 'top'], side)
@@ -30,7 +30,7 @@ Admissible Movement Arguments:
 ##############################################################################
 
 Functions That Create Lines
-from zyxxy2 import
+from zyxxy2.shape_functions import
 
 draw_a_segment(start_x, start_y, length)
 draw_a_power_curve(start_x, start_y, end_1, end_2, power, nb_intermediate_points)
@@ -39,6 +39,7 @@ draw_a_smile(center_x, center_y, width, depth)
 draw_a_zigzag(start_x, start_y, width, height, angle_start, nb_segments)
 draw_a_wave(start_x, start_y, width, height, angle_start, nb_waves)
 draw_a_coil(start_x, start_y, angle_start, nb_turns, speed_x, speed_out)
+draw_a_squiggle_curve(center_x, center_y, angle_start, angle_end, speed_x, width, height)
 draw_a_broken_line(diamond_x, diamond_y, contour)
 
 Admissible Style Arguments:
@@ -50,14 +51,14 @@ Admissible Movement Arguments:
 ##############################################################################
 
 Another Function That Can Create A Shape
-from zyxxy2 import
+from zyxxy2.shape_functions import
 
 clone_a_shape(init_shape)
 
 ##############################################################################
 
 Layer-Related Functions
-from zyxxy2 import
+from zyxxy2.layers import
 
 
 # adding new layers
@@ -75,7 +76,7 @@ stretch_layers_with_direction(diamond, stretch_coeff, stretch_direction, layer_n
 ##############################################################################
 
 Default Shape Style-Related Functions
-from zyxxy2 import
+from zyxxy2.shape_style import
 
 set_default_line_style(color, layer_nb, linewidth, joinstyle, capstyle, diamond_color)
 set_default_patch_style(color, layer_nb, opacity, outline_color, outline_layer_nb, outline_linewidth, outline_joinstyle, outline_capstyle, diamond_color)
@@ -94,7 +95,7 @@ set_default_layer_nb(what, layer_nb)
 ##############################################################################
 
 Utility Functions
-from zyxxy2 import
+from zyxxy2.utils import
 
 
 ## ALGEBRA HELPERS ## 
@@ -115,6 +116,7 @@ add_a_left_mirror(contour, mirror_x=0)
 ## MOVEMENT HELPERS ## 
 get_rotation_matrix(turn)
 move_by_matrix(contour, diamond, matrix)
+turn(contour, turn, diamond=[0, 0])
 rotate_point(point, diamond, turn)
 stretch_something(what_to_stretch, diamond, stretch_coeff)
 
@@ -145,15 +147,20 @@ Default Shape Style-Related Functions
 <an instance of Shape>.get_shape(shape_nb)
 <an instance of Shape>.get_visible()
 <an instance of Shape>.get_xy()
+<an instance of Shape>.get_bbox()
 <an instance of Shape>.get_axes()
 <an instance of Shape>.get_layer_nb()
+<an instance of Shape>.get_shape_parameter(param_name)
 <an instance of Shape>.get_diamond_coords()
 <an instance of Shape>.set_visible(val)
 <an instance of Shape>.make_visible()
 <an instance of Shape>.make_invisible()
 <an instance of Shape>.set_color(color)
 <an instance of Shape>.set_style()
+<an instance of Shape>.get_color()
 <an instance of Shape>.update_contour(new_contour)
+<an instance of Shape>.set_shape_parameters()
+<an instance of Shape>.increment_shape_parameters()
 <an instance of Shape>.reset_given_shapename_and_arguments_and_move(shapename, kwargs_shape, kwargs_common)
 <an instance of Shape>.clip(clip_outline)
 <an instance of Shape>.shift(shift)
@@ -163,6 +170,7 @@ Default Shape Style-Related Functions
 <an instance of Shape>.shift_to(new_diamond_coords)
 <an instance of Shape>.shift_x_to(new_diamond_x)
 <an instance of Shape>.shift_y_to(new_diamond_y)
+<an instance of Shape>.shift_to_position(xy, position)
 <an instance of Shape>.turn(turn, diamond_override=None)
 <an instance of Shape>.turn_to(turn, diamond_override=None)
 <an instance of Shape>.flip_upside_down(diamond_override=None)
@@ -174,20 +182,25 @@ Default Shape Style-Related Functions
 ##############################################################################
 
 color-Related Functions
-from zyxxy2 import
+from zyxxy2.colors import
 
 find_color_code(color_name)
-create_gradient_colors(rgb_start, rgb_end)
+colors_are_equal(color_1, color_2)
+get_color_mix(color_1, proportion_of_color_1, color_2)
+get_color_tone(color, proportion_of_color)
+get_color_tint(color, proportion_of_color)
+get_color_shade(color, proportion_of_color)
+create_gradient_colors(rgb_start, rgb_end, nb_steps=None)
+get_multi_gradient_color(colors, how_many=200, color_limits=None)
 
 ##############################################################################
 
 Functions That Create Examples
-from zyxxy2 import
+from zyxxy2.examples import
 
 
 ## THE FLAGS ##
 example_japanese_flag()
-example_french_flag()
 example_belgian_flag()
 example_cuban_flag()
 example_finnish_flag()
@@ -196,23 +209,19 @@ example_british_flag()
 example_us_flag()
 
 ## THE PENGUINS ##
-example_penguins(model=https://i.pinimg.com/564x/fc/90/7d/fc907dc3638cfd64aa2c3ba56e216b92.jpg)
-example_fish(fish_color=darkturquoise, outline_color=black, eye_color=black)
-example_penguins_animation()
+example_penguins()
+draw_a_gradient_chessboard(my_color=blue, size=10)
 
 ## YELLOW CAT ##
 example_yellow_cat(cat_color=Yellow, background_color=SeaWave)
 example_yellow_cat_animation(cat_color=Yellow, background_color=SeaWave)
+nice_cat()
 
 ## THE CROC ##
-example_croc(model=https://i.pinimg.com/564x/94/36/06/9436061bc2e46c9b382b56dfb58b8db0.jpg)
-example_ani_mated_croc()
-
-## lots of arcs
-example_arcs()
-example_raindrops_animation(blit=True)
-example_raindrops_animation0(use_zyxxy2=True)
-example_raindrops_animationS()
-example_raindrops_animationS2()
-example_raindrops_animationS3()
-example_raindrops_animationS0()
+example_croc(model=https://i.pinimg.com/564x/a5/b7/92/a5b792acaf4c776302be5bd79da8ddbd.jpg)
+example_animated_croc()
+draw_mandala_made_out_of_circles(big_radius=20, circles_qty=13, rgb_start=superGold, rgb_end=red, outline_linewidth=2, support_linewidth=0, min_flower_radius=0.01)
+emoji_fish(fish_color=darkturquoise, outline_color=black, eye_color=black)
+emoji_apple(stalk_depth=1, stalk_width=5, leaf_width=3, apple_color=greenyellow, leaf_color=green)
+emoji_bee(bee_yellow=yellow, wing_color=cyan)
+emoji_smiley()

@@ -2,7 +2,11 @@
 # see https://stackoverflow.com/questions/9827377/setting-matplotlib-mplconfigdir-consider-setting-mplconfigdir-to-a-writable-dir
 import sys; sys.path.append('src')
 
-from zyxxy2 import demo_all_shapes # demo_shape
+from zyxxy2 import _run_all_tests
+_run_all_tests()
+
+from zyxxy2 import try_shapes # demo_shape
+try_shapes()
 
 from zyxxy2 import example_penguins # 
 example_penguins()

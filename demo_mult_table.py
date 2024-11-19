@@ -17,7 +17,7 @@
 import matplotlib.pyplot as plt
 
 from zyxxy2 import show_demo, prepare_axes
-from zyxxy2.settings import figure_params
+from zyxxy2.settings import demo_figure_params
 from zyxxy2.settings import widget_params
 from zyxxy2.settings import default_display_params, default_font_sizes, default_image_params
 from zyxxy2 import draw_a_square
@@ -30,7 +30,7 @@ plt.rcParams.update({'font.size': default_font_sizes['axes_label']})
 f_size = min(default_display_params['max_figsize'])
 fig = plt.figure(figsize=(f_size/1.10, f_size), dpi=default_image_params['dpi']) 
 
-plot_ax_bottom = 3 * (widget_params['height'] + widget_params['gap']) + figure_params['plot_bottom_gap'] + 0.05 * 2
+plot_ax_bottom = 3 * (widget_params['height'] + widget_params['gap']) + demo_figure_params['plot_bottom_gap'] + 0.05 * 2
 plot_ax_left = (1 - (1 - plot_ax_bottom) * fig.get_size_inches()[1] / fig.get_size_inches()[0]) / 2.
 assert plot_ax_left > 0
 ##########################################################################################
@@ -60,7 +60,7 @@ def show(_):
   #blocks_to_move = ((h - target_ranks - (target_units > 0)) // target_ranks) * max(1, (base - ))
   plt.gcf().canvas.draw_idle()
 
-slider_bottom = figure_params['plot_bottom_gap']
+slider_bottom = demo_figure_params['plot_bottom_gap']
 slider = {}
 for caption, init_value, step, func in [['show!', 0, base/100, show], ['v', init_v, 1, change_numbers], 
                                                                       ['h', init_h, 1, change_numbers]]:

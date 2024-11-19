@@ -55,7 +55,7 @@ def _get_function_comment(f_object):
 ##################################################################
 def _function_with_comments_and_arguments(f_name, f_object, class_name=None):
 
-  func_args_object = inspect.getargspec(f_object)
+  func_args_object = inspect.getfullargspec(f_object)
   func_args_line = [a for a in func_args_object.args if a != 'self'] if func_args_object.args is not None else []
   if func_args_object.defaults is not None:
     for i, d in enumerate(reversed(func_args_object.defaults)):
