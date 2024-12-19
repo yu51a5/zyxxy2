@@ -33,8 +33,8 @@ from .settings import widget_params, canvas_width, canvas_height, slider_range
 sides = ['left', 'right']
 shape_types = ["patch", "line"]
 
-def try_shapes():
-  plt.rcParams.update({'font.size': 2*figure_params['font_size']})
+def try_shapes(font_scaling=2):
+  plt.rcParams.update({'font.size': font_scaling*figure_params['font_size']})
   active_shapename = {side: None for side in sides}
   shapes_by_side_by_shapetype = {
     side: {st: None

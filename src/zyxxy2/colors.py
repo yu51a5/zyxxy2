@@ -19,7 +19,7 @@ def find_color_code(color_name):
     return find_color_code([color_name, color_name, color_name])
   if isinstance(color_name, Iterable) and (len(color_name) == 3):
     try:
-      return np.array(to_rgb(np.array(color_name)/255.))
+      return np.array(to_rgb(np.array(color_name)/(255. if isinstance(color_name[0], int) else 1)))
     except:
       pass
   if isinstance(color_name, str):

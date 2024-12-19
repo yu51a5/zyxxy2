@@ -25,7 +25,7 @@ from .coordinates import shape_names_params_dicts_definition, get_type_given_sha
 from .settings import slider_range
 from .layers import new_layer, shift_layers, turn_layers
 
-def demo_all_shapes():
+def view_all_shapes():
   smile = build_a_smile(width=3, depth=0.5)
   zigzag = build_a_zigzag(width=3, height=0.5, angle_start=-3, nb_segments=6)
   zigzag += -zigzag[0] + smile[-1] + [0, 3.5]

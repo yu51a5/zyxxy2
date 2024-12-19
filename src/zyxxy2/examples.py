@@ -517,7 +517,7 @@ def example_animated_croc():
 ##################################################################################################################
 
 def draw_mandala_made_out_of_circles(big_radius=20, circles_qty=13, 
-                                rgb_start='superGold', rgb_end='red', 
+                                color_outside='blue', color_inside='red', 
                                 outline_linewidth=2, support_linewidth=0, 
                                 min_flower_radius = 0.01):
 
@@ -529,7 +529,8 @@ def draw_mandala_made_out_of_circles(big_radius=20, circles_qty=13,
   flower_radiuses = np.array([2*big_radius*cos((full_turn_angle/2)*i/circles_qty) for i in range(max_flowers_nb)])
   max_flowers_nb = (flower_radiuses >= (min_flower_radius * big_radius / (2 * sin(full_turn_angle/2/circles_qty)))).sum()
 
-  colors = create_gradient_colors(rgb_start=rgb_start, rgb_end=rgb_end, nb_steps=max_flowers_nb)
+  colors = create_gradient_colors(rgb_start=color_outside, rgb_end=color_inside, nb_steps=max_flowers_nb)
+  
 
   def _build_a_big_arc(circle_earlier, circle_later, circle_nb):
     a = build_an_arc(radius=big_radius, 
@@ -543,8 +544,11 @@ def draw_mandala_made_out_of_circles(big_radius=20, circles_qty=13,
     array_ = [[[max(circles_qty/2, circles_qty-j-1), circles_qty-j, i+j], [j, min(j+1, circles_qty/2), i]] for i in range(circles_qty)]
     array_ = np.array(array_).reshape(circles_qty*2, 3)
     arcs = [_build_a_big_arc(circle_earlier=cs, circle_later=ce, circle_nb=cn) for cs, ce, cn in array_ ]
-    draw_a_polygon(contour=link_contours(*arcs), color=colors[j], outline_linewidth=outline_linewidth, outline_layer_nb=layer_nb+1/2)
+    draw_a_polygon(contour=link_contours(*arcs), color=colors[j], 
+                   outline_linewidth=outline_linewidth, outline_layer_nb=layer_nb+1/2)
 
+    #show_and_save(save=False, block=False)
+    #_ = input('wait')
     gcd = find_GCD(j, circles_qty)
     how_many_arcs_in_one_broken_line = circles_qty // gcd
     for r in range(gcd):

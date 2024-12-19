@@ -2,14 +2,14 @@
 # see https://stackoverflow.com/questions/9827377/setting-matplotlib-mplconfigdir-consider-setting-mplconfigdir-to-a-writable-dir
 import sys; sys.path.append('src')
 
-from zyxxy2 import _run_all_tests
-_run_all_tests()
+#from zyxxy2 import _run_all_tests
+#_run_all_tests()
 
 from zyxxy2 import try_shapes # demo_shape
-try_shapes()
+#try_shapes(font_scaling=1)
 
 from zyxxy2 import example_penguins # 
-example_penguins()
+#example_penguins()
 
 ################################################################
 # import draw_a_flag_of_Japan
@@ -53,7 +53,7 @@ from zyxxy2 import *
 # example_croc()
 # example_penguins()
 # example_yellow_cat()
-# draw_mandala_made_out_of_circles()
+draw_mandala_made_out_of_circles(color_inside='yellow')
 # emoji_smiley()
 # emoji_bee()
 # emoji_apple()
