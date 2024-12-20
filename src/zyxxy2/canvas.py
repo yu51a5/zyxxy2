@@ -345,6 +345,7 @@ def create_canvas_and_axes(
     title_font_size=default_font_sizes['title'],
     axes_label_font_size=default_font_sizes['axes_label'],
     axes_tick_font_size=default_font_sizes['axes_tick'],
+    axes_tick_font_size_factor=1.,
     max_figsize=default_display_params['max_figsize'],
     dpi=default_image_params['dpi'],
     min_margin=default_display_params['min_margin'],
@@ -385,7 +386,7 @@ def create_canvas_and_axes(
     'tick_step_x': tick_step_x,
     'tick_step_y': tick_step_y,
     'axes_label_font_size': axes_label_font_size,
-    'axes_tick_font_size': axes_tick_font_size,
+    'axes_tick_font_size': axes_tick_font_size*axes_tick_font_size_factor,
     'title_font_size': title_font_size,
     'background_color': background_color,
     'xlabel': xlabel if tick_step_x is not None else None,
@@ -404,7 +405,7 @@ def create_canvas_and_axes(
 
   font_size = {
     'axes_label': axes_label_font_size,
-    'axes_tick': axes_tick_font_size,
+    'axes_tick': axes_tick_font_size*axes_tick_font_size_factor,
     'title': title_font_size
   }
   margin = _calc_margins(min_margin=min_margin,
