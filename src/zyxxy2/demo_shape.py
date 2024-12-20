@@ -219,9 +219,8 @@ def try_shapes(font_scaling=2):
 
     def param_dict_to_str(param_dict_):
       result = [
-        key + ' = ' +
-        (str(value) if not isinstance(value, str) else '"' + value + '"')
-        for key, value in param_dict_.items()
+        key + '=' + (str(value) if not isinstance(value, str) else '"' + value + '"')
+          for key, value in param_dict_.items()
       ]
       return result
 
@@ -242,8 +241,8 @@ def try_shapes(font_scaling=2):
     file_contents = [
       "# This file is regenerated every time you press 'Dump Python File' button",
       "# Rename it if you want to keep the contents", "",
-      "from .canvas import create_canvas_and_axes, show_and_save",
-      "from .shape_functions import " +
+      "from zyxxy2 import create_canvas_and_axes, show_and_save",
+      "from zyxxy2 import " +
       ", ".join(active_shapename_draw_function.values()), "",
       "create_canvas_and_axes(" + ', '.join(
         param_dict_to_str(
