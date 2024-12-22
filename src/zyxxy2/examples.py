@@ -310,10 +310,10 @@ def example_yellow_cat_animation(cat_color='Yellow', background_color='SeaWave')
   show_and_save(animation_init=init, animation_func=animate,
     nb_of_frames = 2 * nb_eye_narrowing + 1 + nb_smile + 1 + nb_zoom + 1, animation_interval=100)
 
-def nice_cat():
+def nice_cat(axes_params=dict(canvas_width=12, canvas_height=16), block=True):
   #######################################################
   # Creating the canvas!                               
-  create_canvas_and_axes( canvas_width = 12, canvas_height = 16)
+  create_canvas_and_axes(**axes_params)
 
   #######################################################
   # Now let's draw the shapes!                         
@@ -322,7 +322,7 @@ def nice_cat():
   draw_a_triangle(width=3, height=3, tip_x=10, tip_y=13, turn=7+1/2, color='orangered')
   draw_a_triangle(width=2, height=2, tip_x=3, tip_y=12, turn=4+1/2, color='pink')
   draw_a_triangle(width=2, height=2, tip_x=9, tip_y=12, turn=7+1/2, color='pink')
-  draw_a_circle(center_x=6, center_y=8, radius=4, color='orangered')
+  head = draw_a_circle(center_x=6, center_y=8, radius=4, color='orangered')
   
   draw_a_circle(center_x=4, center_y=9, radius=1, color='white', outline_linewidth=5)
   draw_a_circle(center_x=8, center_y=9, radius=1, color='white', outline_linewidth=5)
@@ -338,7 +338,8 @@ def nice_cat():
   draw_a_segment(start_x=5, start_y=6+1/2, turn=8, length=2, linewidth=5, color='black')
   draw_a_segment(start_x=7, start_y=6+1/2, turn=4, length=2, linewidth=5, color='black')
   
-  show_and_save()
+  show_and_save(block = block)
+  return head
 
 #########################################################
 ## THE CROC                                            ##

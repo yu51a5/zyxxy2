@@ -715,7 +715,8 @@ def show_and_save(save=True,
 def wait_for_enter(msg="Press ENTER when you are ready ..."):
   if not _is_running_tests():
     plt.show(block=False)
-    _ = input(msg)
+    _input = input(msg)
+    return _input
   else:
     global SLIDE_OR_FRAME_NUMBER
     filename, image_format = __get_output_filename_and_format()
