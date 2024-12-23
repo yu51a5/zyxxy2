@@ -318,8 +318,8 @@ def nice_cat(axes_params=dict(canvas_width=12, canvas_height=16), block=True):
   #######################################################
   # Now let's draw the shapes!                         
 
-  draw_a_triangle(width=3, height=3, tip_x=2, tip_y=13, turn=4+1/2, color='orangered')
-  draw_a_triangle(width=3, height=3, tip_x=10, tip_y=13, turn=7+1/2, color='orangered')
+  ear_left = draw_a_triangle(width=3, height=3, tip_x=2, tip_y=13, turn=4+1/2, color='orangered')
+  ear_right = draw_a_triangle(width=3, height=3, tip_x=10, tip_y=13, turn=7+1/2, color='orangered')
   draw_a_triangle(width=2, height=2, tip_x=3, tip_y=12, turn=4+1/2, color='pink')
   draw_a_triangle(width=2, height=2, tip_x=9, tip_y=12, turn=7+1/2, color='pink')
   head = draw_a_circle(center_x=6, center_y=8, radius=4, color='orangered')
@@ -339,7 +339,7 @@ def nice_cat(axes_params=dict(canvas_width=12, canvas_height=16), block=True):
   draw_a_segment(start_x=7, start_y=6+1/2, turn=4, length=2, linewidth=5, color='black')
   
   show_and_save(block = block)
-  return head
+  return head, (ear_left, ear_right)
 
 #########################################################
 ## THE CROC                                            ##

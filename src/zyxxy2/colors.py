@@ -1,10 +1,12 @@
 import numpy as np
-from matplotlib.colors import to_rgb
+import matplotlib.colors as mcolors
 from math import floor
 from collections.abc import Iterable
 
 from .settings import my_color_palette
 from .utils import find_LCM, get_sign, is_the_same_point, is_a_number
+
+mpl_colors = mcolors.BASE_COLORS | mcolors.CSS4_COLORS | mcolors.TABLEAU_COLORS | mcolors.XKCD_COLORS
 
 ##################################################################
 ## color HELPERS                                               ## 
@@ -13,17 +15,20 @@ from .utils import find_LCM, get_sign, is_the_same_point, is_a_number
 def find_color_code(color_name):
   if color_name is None or (isinstance(color_name, str) and color_name == 'none'):
     return 'none'
-  if isinstance(color_name, str) and color_name in my_color_palette:
-    return np.array(to_rgb(my_color_palette[color_name]))
+  if isinstance(color_name, str):
+    if color_name in my_color_palette:
+      return np.array(mcolors.to_rgb(my_color_palette[color_name]))
+    if color_name in mpl_colors:
+      return np.array(mcolors.to_rgb(mpl_colors[color_name]))
   if is_a_number(color_name):
     return find_color_code([color_name, color_name, color_name])
   if isinstance(color_name, Iterable) and (len(color_name) == 3):
     try:
-      return np.array(to_rgb(np.array(color_name)/(255. if isinstance(color_name[0], int) else 1)))
+      return np.array(mcolors.to_rgb(np.array(color_name)/(255. if isinstance(color_name[0], int) else 1)))
     except:
       pass
   if isinstance(color_name, str):
-    return np.array(to_rgb(color_name))
+    return np.array(mcolors.to_rgb(color_name))
   raise Exception(f"{color_name} is not a valid color!")
 
 ##################################################################
