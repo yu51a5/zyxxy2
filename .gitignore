@@ -7,6 +7,9 @@ __pycache__/
 test_files/test_*
 *dump.py
 images_videos/
+.replit
+replit.nix
+uv.lock
 
 # C extensions
 *.so
