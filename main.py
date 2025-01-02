@@ -3,39 +3,83 @@
 import sys; sys.path.append('src')
 
 from timeit import default_timer as timer
-from zyxxy2 import nice_cat, wait_for_enter, shift_layers, stretch_layers, draw_a_circle, random_integer_number, is_the_same_point, find_color_code
+from zyxxy2 import get_axes_limits, new_layer, draw_a_speech_bubble, set_default_text_style, find_color_code, find_color_code_HEX, find_color_code_int, nice_cat, wait_for_enter, shift_layers, stretch_layers, draw_a_circle, random_integer_number, is_the_same_point, find_color_code
 
-canvas_width = 60
-canvas_height = 39
-light_radius = 10
+canvas_width = 60.
+canvas_height = 39.
+light_radius = 10.
 
+set_default_text_style(linewidth=5, fontsize=20, triangle_width=2)
 head, ears = nice_cat(axes_params=dict(canvas_width=60, canvas_height=39, tick_step=3,), block=False)
+limits_x, limits_y = get_axes_limits()
 stretch_layers(diamond=head.diamond_coords, stretch=light_radius/4, layer_nbs=[1])
-light = draw_a_circle(center=(30, 30), radius=light_radius, color='yellow', opacity=0.5, layer_nb=2, diamond_color='black')
+light = draw_a_circle(center=(0, 0), radius=light_radius, color='yellow', opacity=0.5, layer_nb=2, diamond_color='black')
+new_layer()
+new_layer()
+sb_cat = draw_a_speech_bubble(text="Cat", x=light_radius, y=light_radius*1.6, start=[head.center_x+light_radius/3., head.center_y-light_radius/3.], background_color='white', position='lt')
+sb_light = draw_a_speech_bubble(text="Light",x=0., y=light_radius/2., start=[+light_radius/5., +light_radius/10.], background_color='white', outline_color='yellow', position='ct')
+sb_cat.connector.set_visible(False)
+sb_light.connector.set_visible(False)
+sb_light.set_outline_color('yellow')
+
+def position_texts():
+  if head.center_x < light.center_x:
+    sb_cat.left = limits_x[0] * .97 + limits_x[1] * .03
+    sb_light.right = limits_x[1] * .97 + limits_x[0] * .03
+  else:
+    sb_light.left = limits_x[0] * .97 + limits_x[1] * .03
+    sb_cat.right = limits_x[1] * .97 + limits_x[0] * .03
+
+  if head.center_y < light.center_y:
+    sb_cat.bottom = head.center_y - light_radius / 2.
+    sb_light.bottom = light.center_y + light_radius / 4.
+  else:
+    sb_light.top = light.center_y - light_radius / 4.
+    sb_cat.bottom = head.center_y + light_radius * .7
+  sb_cat.set_start([head.center_x+light_radius/3., head.center_y-light_radius/3.])
+  sb_light.set_start([light.center_x+light_radius/5., light.center_y+light_radius/10.])
+
 while True:
-  new_light_center = (float(random_integer_number(min=light_radius, max=canvas_width-light_radius)),
-                      float(random_integer_number(min=light_radius, max=canvas_height-light_radius)))
+  light_old = [light.center_x, light.center_y]
+  new_light_center = (float(random_integer_number(min=int(limits_x[0]+light_radius), max=int(limits_x[1]-light_radius))),
+                      float(random_integer_number(min=int(limits_y[0]+light_radius), max=int(limits_y[1]-light_radius))))
   light.shift_to(new_light_center)
+  sb_light.make_visible(True)
+  sb_light.connector.set_visible(False)
+  sb_light.set_text(f"Light is in {light.diamond_coords}")
+  position_texts()  
+  new_color = None
   while True:
+    sb_cat.set_text((f"Cat is {new_color},\n" if new_color else "") + f"I am in {head.diamond_coords}") 
+    position_texts()
+    sb_cat.set_outline_color(head.get_color()[:3])
+      
     start = timer()
     cat_shift_str = wait_for_enter(f"Light is in {light.diamond_coords}. Cat is in {head.diamond_coords}. Enter cat shift! ")
     duration = timer() - start
     cat_shift = eval("(" + cat_shift_str + ")")
     
     shift_layers(shift=cat_shift, layer_nbs=[1])
+    position_texts()
     if (is_the_same_point(head.diamond_coords, light.diamond_coords)):
-      new_color = wait_for_enter(f"Well done! Evaluation time: {int(duration)} seconds. Optionally, enter new cat color. Then press ENTER to continue. ")
-      try:
-        c = find_color_code(new_color)
-      except:
-        print(f"`{new_color}` is an invalid color. Continuing with the same color...")
-        break    
+      sb_cat.set_text(f"Done in {int(duration)} seconds!\nNew color?")
+      position_texts()
+      sb_light.make_visible(False)
+      new_color = wait_for_enter(f"Optionally, enter new cat color. Then press ENTER to continue.")
       if new_color:
-        print(f"New cat color is `{new_color}`, its RGB values are {c}.")
+        try:
+          c = find_color_code(new_color)
+        except:
+          print(f"`{new_color}` is an invalid color. Continuing with the same color...")
+          new_color = None 
+      if new_color:  
+        print(f"""New cat color is `{new_color}`, its RGB values are {find_color_code_int(new_color)}, 
+              its HEX values are {find_color_code_HEX(new_color)}.""")
         head.color = new_color
         for ear in ears:
           ear.color = new_color
       break
+
 
 #from zyxxy2 import _run_all_tests
 #_run_all_tests()

@@ -31,6 +31,22 @@ def find_color_code(color_name):
     return np.array(mcolors.to_rgb(color_name))
   raise Exception(f"{color_name} is not a valid color!")
 
+def find_color_code_int(color_name):
+  cc_float = find_color_code(color_name)
+  cc_int = [min(255, int(255*c)) for c in cc_float]
+  return cc_int
+
+def find_color_code_HEX(color_name): 
+  def number_to_HEX(i):
+    assert 0 <= i <= 15
+    if 0 <= i <= 9:
+      return str(i)
+    return chr(ord('A') + i-10)
+  cc_int = find_color_code_int(color_name)
+  cc_3_HEX = [number_to_HEX(c//16)+number_to_HEX(c%16) for c in cc_int]
+  result = '#' + ''.join(cc_3_HEX)
+  return result
+
 ##################################################################
 def colors_are_equal(color_1, color_2):
   color_code_1, color_code_2 = find_color_code(color_1), find_color_code(color_2)

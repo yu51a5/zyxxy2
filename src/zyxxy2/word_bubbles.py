@@ -69,10 +69,16 @@ class WordBubble:
 
     ax = _get_axes(ax=ax)
       
-    props, used_argnames = WordBubble._create_params_subdictionary([['facecolor', 'background_color'], ['alpha', 'opacity'], 'pad', # 'rounding_size', 
+    props, used_argnames = WordBubble._create_params_subdictionary([['facecolor', 'background_color'],                                                                
+    ['alpha', 'opacity'], 'pad', # 'rounding_size', 
     ['edgecolor', 'linecolor'], 'linewidth', ['zorder', 'layer_nb']], kwargs)
     props['boxstyle'] = 'round'
-  
+    if 'opacity' in props:
+      opacity = props['opacity']
+      props['opacity'] = 1.
+    else:
+      opacity = None
+    
     text_dict, used_argnames2 = WordBubble._create_params_subdictionary(['fontsize', 'verticalalignment', 'horizontalalignment', 'multialignment', 'wrap', ['zorder', 'layer_nb'], 'fontfamily', 'color'], kwargs)
     used_argnames += used_argnames2
 
@@ -94,7 +100,7 @@ class WordBubble:
     props['zorder'] += 1/2
     text_dict['zorder'] += 1/2
     props['edgecolor'] = 'none'
-    props['facecolor'] = 'none'
+    #props['facecolor'] = 'none'
 
     self.text_boxes.append(ax.text(s=text, x=x, y=y, transform=ax.transData, **text_dict, bbox=props))
     WordBubble.text_boxes += self.text_boxes
@@ -102,7 +108,7 @@ class WordBubble:
     if start is not None:
       connection = 'triangle'
     self.connection = connection
-    self.start = start
+    self.start = np.array(start)
     if start is None:
       self.connector = None
     else:
@@ -121,20 +127,24 @@ class WordBubble:
   def get_axes(self):
     result = self.text_boxes[0].axes
     return result
+  
+  def set_outline_color(self, color):
+    self.text_boxes[0].get_bbox_patch().set_ec(color)
+    if self.connector:
+      self.connector.outline_color = color
 
   def get_layer_nb(self):
     result = self.text_boxes[0].get_zorder()
     return result
 
   def _get_what_to_move(self):
-    result = self.text_boxes
+    result = [] if self.connector is None else [self.connector]
+    result += self.text_boxes
     return result
 
   def make_visible(self, val=True):
-    self.text_boxes[0].set_visible(val)
-    self.text_boxes[1].set_visible(val)
-    if self.connector is not None:
-      self.connector.set_visible(val)
+    for t in self._get_what_to_move():
+      t.set_visible(val)
 
   def make_invisible(self):
     self.make_visible(False)
@@ -154,6 +164,7 @@ class WordBubble:
 
   def shift_to_position(self, xy, position):
 
+    old_position = np.array(self.text_boxes[0].get_position())
     # now adjust the position if needed
     new_xy = [xy[0], xy[1]]
     bbox = self.get_bbox()
@@ -172,18 +183,33 @@ class WordBubble:
 
     for tb in self.text_boxes:
       tb.set_position(new_xy)
+    if self.connector:
+      pass # self.connector.shift(np.array(new_xy) - old_position)
     self.set_text(text=self.get_text())
+    
 
   def shift(self, shift):
     for tb in self.text_boxes:
-      tb.set_position(np.array(shift) + tb.get_position())
+      tb.set_position(np.array(shift) + tb.get_position()) 
+    if self.connector:
+      self.start += shift
+      self.connector.shift(shift)
+    self.set_text(text=self.get_text())
 
   def get_text(self):
     return self.text_boxes[0].get_text()
+  
+  def set_start(self, start):
+    if not self.connector:
+      return
+    old_start = [self.start[0], self.start[1]]
+    self.start = start
+    self.connector.shift([start[0] - old_start[0], start[1] - old_start[1]])
+    self.set_text(text=self.get_text())
 
   def set_text(self, text, mid_override=None):
-    self.text_boxes[0].set_text(text) 
-    self.text_boxes[1].set_text(text)  
+    for t in self.text_boxes:
+      t.set_text(text)  
     tbb_it = self.get_bbox()
     mid = mid_override if mid_override is not None else [0.5*(tbb_it.x1+tbb_it.x0), 0.5*(tbb_it.y1+tbb_it.y0)]
 

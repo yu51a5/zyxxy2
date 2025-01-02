@@ -84,6 +84,12 @@ def _find_absolute_bbox(in_bbox, out_bbox):
   }
   return result
 
+########################################################################
+def get_axes_limits(ax=None):
+  if ax is None:
+    ax = plt.gca()
+  result = ax.get_xlim(), ax.get_ylim()
+  return result
 
 ########################################################################
 def place_axes_on_axes(ax_parent, ax_parent_absolute, new_coords):
@@ -705,12 +711,9 @@ def show_and_save(save=True,
         )
 
   if USE_PLT_SHOW and not _is_running_tests() and not INSIDE_ANIMATION:
-    print("just before showing", datetime.datetime.now())
     plt.show(block=block)
 
-
 ##################################################################
-
 
 def wait_for_enter(msg="Press ENTER when you are ready ..."):
   if not _is_running_tests():
