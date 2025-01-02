@@ -3,7 +3,10 @@
 import sys; sys.path.append('src')
 
 from timeit import default_timer as timer
-from zyxxy2 import get_axes_limits, new_layer, draw_a_speech_bubble, set_default_text_style, find_color_code, find_color_code_HEX, find_color_code_int, nice_cat, wait_for_enter, shift_layers, stretch_layers, draw_a_circle, random_integer_number, is_the_same_point, find_color_code
+from zyxxy2 import calc_angle, get_axes_limits, new_layer, draw_a_speech_bubble, set_default_text_style, find_color_code, find_color_code_HEX, find_color_code_int, nice_cat, wait_for_enter, shift_layers, stretch_layers, draw_a_circle, random_integer_number, is_the_same_point, find_color_code
+
+from zyxxy2 import example_penguins # 
+example_penguins()
 
 canvas_width = 60.
 canvas_height = 39.
@@ -23,19 +26,29 @@ sb_light.connector.set_visible(False)
 sb_light.set_outline_color('yellow')
 
 def position_texts():
+  cat_xy, cat_position = [0., 0.], ["", ""]
+  light_xy, light_position = [0., 0.], ["", ""]
+
+  left_x, right_x = limits_x[0] * .97 + limits_x[1] * .03, limits_x[1] * .97 + limits_x[0] * .03
   if head.center_x < light.center_x:
-    sb_cat.left = limits_x[0] * .97 + limits_x[1] * .03
-    sb_light.right = limits_x[1] * .97 + limits_x[0] * .03
+    cat_xy[0], cat_position[0] = left_x, "l"
+    light_xy[0], light_position[0] = right_x, "r"
   else:
-    sb_light.left = limits_x[0] * .97 + limits_x[1] * .03
-    sb_cat.right = limits_x[1] * .97 + limits_x[0] * .03
+    cat_xy[0], cat_position[0] = right_x, "r"
+    light_xy[0], light_position[0] = left_x, "l"
 
   if head.center_y < light.center_y:
-    sb_cat.bottom = head.center_y - light_radius / 2.
-    sb_light.bottom = light.center_y + light_radius / 4.
+    cat_position[1], cat_xy[1] = "b", head.center_y - light_radius / 2.
+    light_position[1], light_xy[1] = "b", light.center_y + light_radius / 4.
   else:
-    sb_light.top = light.center_y - light_radius / 4.
-    sb_cat.bottom = head.center_y + light_radius * .7
+    light_position[1], light_xy[1] = "t", light.center_y - light_radius / 4.
+    cat_position[1], cat_xy[1] = "b", head.center_y + light_radius * .7
+
+  print(cat_xy, cat_position, light_xy, light_position)
+
+  sb_cat.shift_to_position(xy=cat_xy, position=cat_position)
+  sb_light.shift_to_position(xy=light_xy, position=light_position)
+
   sb_cat.set_start([head.center_x+light_radius/3., head.center_y-light_radius/3.])
   sb_light.set_start([light.center_x+light_radius/5., light.center_y+light_radius/10.])
 

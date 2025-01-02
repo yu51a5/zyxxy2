@@ -18,7 +18,7 @@ import numpy as np
 from matplotlib.transforms import Bbox
 
 from .shape_style import _get_axes, get_default_text_bubble_params, get_linewidth_factor
-from .utils import atan, calc_Pythagoras
+from .utils import calc_angle, calc_Pythagoras
 from .shape_functions import draw_a_triangle
 from .colors import find_color_code
 from .bbox import ObjPosition
@@ -163,29 +163,28 @@ class WordBubble:
     return tbb_it
 
   def shift_to_position(self, xy, position):
+    for _ in range(2):
+      # now adjust the position if needed
+      new_xy = [xy[0], xy[1]]
+      bbox = self.get_bbox()
 
-    old_position = np.array(self.text_boxes[0].get_position())
-    # now adjust the position if needed
-    new_xy = [xy[0], xy[1]]
-    bbox = self.get_bbox()
+      assert(position[0] in ['l', 'c', 'r'])
+      if position[0] == 'c':
+        new_xy[0] -= bbox.width/2
+      elif position[0] == 'r':
+        new_xy[0] -= bbox.width
+      
+      assert(position[1] in ['b', 'c', 't'])
+      if position[1] == 'c':
+        new_xy[1] -= bbox.height/2
+      elif position[1] == 't':
+        new_xy[1] -= bbox.height
 
-    assert(position[0] in ['l', 'c', 'r'])
-    if position[0] == 'c':
-      new_xy[0] -= bbox.width/2
-    elif position[0] == 'r':
-      new_xy[0] -= bbox.width
-    
-    assert(position[1] in ['b', 'c', 't'])
-    if position[1] == 'c':
-      new_xy[1] -= bbox.height/2
-    elif position[1] == 't':
-      new_xy[1] -= bbox.height
-
-    for tb in self.text_boxes:
-      tb.set_position(new_xy)
-    if self.connector:
-      pass # self.connector.shift(np.array(new_xy) - old_position)
-    self.set_text(text=self.get_text())
+      for tb in self.text_boxes:
+        tb.set_position(new_xy)
+      if self.connector:
+        pass # self.connector.shift(np.array(new_xy) - old_position)
+      self.set_text(text=self.get_text())
     
 
   def shift(self, shift):
@@ -216,12 +215,10 @@ class WordBubble:
     if self.connection is None:
       pass
     elif  self.connection == 'triangle':
-      # xy is a top left corner
+
       triangle_height = calc_Pythagoras(self.start[0] - mid[0], self.start[1] - mid[1])
       self.connector.height = triangle_height
-      triangle_turn = atan((self.start[0] - mid[0]) / (self.start[1] - mid[1]))
-      if self.start[1] > mid[1]:
-        triangle_turn += 6
+      triangle_turn = calc_angle(x=mid[0], y=mid[1], diamond_x=self.start[0], diamond_y=self.start[1])
       self.connector.turn_to(turn=triangle_turn)
     else:
       raise Exception("not implemented")

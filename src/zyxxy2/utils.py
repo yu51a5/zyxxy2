@@ -250,3 +250,18 @@ def acos(cos_value):
   return math.acos(cos_value) / (2 * math.pi) * full_turn_angle
 def atan(tan_value):
   return math.atan(tan_value) / (2 * math.pi) * full_turn_angle
+
+def calc_angle(x, y, diamond_x=0., diamond_y=0.):
+  if equal_or_almost(y, diamond_y):
+    if equal_or_almost(x, diamond_x):
+      raise Exception("The angle is undefined since the point and the origin are the same.")
+    result = full_turn_angle * (0.25 if x > diamond_x else 0.75)
+    return result
+  if equal_or_almost(x, diamond_x):
+    result = full_turn_angle * (0.0 if y > diamond_y else 0.5)
+    return result
+  atan_arg = (x - diamond_x) / (y - diamond_y)
+  result = atan(atan_arg) +  full_turn_angle * (.5 if y < diamond_y else 0.)
+  if result < 0.:
+    result += full_turn_angle
+  return result
