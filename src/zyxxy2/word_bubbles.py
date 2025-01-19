@@ -79,7 +79,10 @@ class WordBubble:
     else:
       opacity = None
     
-    text_dict, used_argnames2 = WordBubble._create_params_subdictionary(['fontsize', 'verticalalignment', 'horizontalalignment', 'multialignment', 'wrap', ['zorder', 'layer_nb'], 'fontfamily', 'color'], kwargs)
+    text_dict, used_argnames2 = WordBubble._create_params_subdictionary(['fontsize', 
+    'verticalalignment', 'horizontalalignment', 'multialignment', 
+    'wrap', ['zorder', 'layer_nb'], 
+    'fontfamily', 'fontstyle', 'fontvariant', 'fontweight', 'color'], kwargs)
     used_argnames += used_argnames2
 
     _triangle = draw_a_triangle(tip=[0, 0], height=0, width=0, turn=0, color=props['facecolor'], 
