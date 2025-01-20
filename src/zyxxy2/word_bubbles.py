@@ -81,7 +81,7 @@ class WordBubble:
     
     text_dict, used_argnames2 = WordBubble._create_params_subdictionary(['fontsize', 
     'verticalalignment', 'horizontalalignment', 'multialignment', 
-    'wrap', ['zorder', 'layer_nb'], 
+    'wrap', ['zorder', 'layer_nb'], 'clip_on',
     'fontfamily', 'fontstyle', 'fontvariant', 'fontweight', 'color'], kwargs)
     used_argnames += used_argnames2
 
