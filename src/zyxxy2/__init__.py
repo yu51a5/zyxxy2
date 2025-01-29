@@ -9,8 +9,9 @@ from .widgets import *
 from .coordinates import *
 from .animation import show_and_save_basic_animation
 from .examples import *
+from .pdf import *
 from .tests import _run_all_tests
 
-from .demo_all_shapes import view_all_shapes
+from .demo_all_shapes import view_all_shapes, print_all_shapes
 from .demo_shape import try_shapes
 from .demo_trigo import show_trigo

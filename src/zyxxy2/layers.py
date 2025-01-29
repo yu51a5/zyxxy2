@@ -70,4 +70,4 @@ def make_layers_invisible(layer_nbs=[]):
 def stretch_layers_with_direction(diamond, stretch_coeff, stretch_direction, layer_nbs=[]):
   _shapes = Shape._get_all_shapes_in_layers(layer_nbs) + WordBubble.get_all_in_layers(layer_nbs)
   for shape in _shapes:
-    shape.stretch_with_direction(diamond_override=diamond, stretch_coeff=stretch_coeff, stretch_direction=stretch_direction)
+    shape.stretch_with_direction(diamond_override=diamond, stretch_coeff=stretch_coeff, direction=stretch_direction)

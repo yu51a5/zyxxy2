@@ -68,7 +68,7 @@ class WordBubble:
     WordBubble.all_objects.append(self)
 
     ax = _get_axes(ax=ax)
-      
+    self.position = 'lb'
     props, used_argnames = WordBubble._create_params_subdictionary([['facecolor', 'background_color'],                                                                
     ['alpha', 'opacity'], 'pad', # 'rounding_size', 
     ['edgecolor', 'linecolor'], 'linewidth', ['zorder', 'layer_nb']], kwargs)
@@ -166,6 +166,7 @@ class WordBubble:
     return tbb_it
 
   def shift_to_position(self, xy, position):
+    self.position = position
     for _ in range(2):
       # now adjust the position if needed
       new_xy = [xy[0], xy[1]]
@@ -188,7 +189,6 @@ class WordBubble:
       if self.connector:
         pass # self.connector.shift(np.array(new_xy) - old_position)
       self.set_text(text=self.get_text())
-    
 
   def shift(self, shift):
     for tb in self.text_boxes:
@@ -197,6 +197,12 @@ class WordBubble:
       self.start += shift
       self.connector.shift(shift)
     self.set_text(text=self.get_text())
+
+  def shift_x(self, shift):
+    self.shift((shift, 0))
+
+  def shift_y(self, shift):
+    self.shift((0, shift))
 
   def get_text(self):
     return self.text_boxes[0].get_text()
@@ -209,11 +215,11 @@ class WordBubble:
     self.connector.shift([start[0] - old_start[0], start[1] - old_start[1]])
     self.set_text(text=self.get_text())
 
-  def set_text(self, text, mid_override=None):
+  def set_text(self, text):
     for t in self.text_boxes:
       t.set_text(text)  
     tbb_it = self.get_bbox()
-    mid = mid_override if mid_override is not None else [0.5*(tbb_it.x1+tbb_it.x0), 0.5*(tbb_it.y1+tbb_it.y0)]
+    mid = [0.5*(tbb_it.x1+tbb_it.x0), 0.5*(tbb_it.y1+tbb_it.y0)]
 
     if self.connection is None:
       pass
@@ -225,6 +231,20 @@ class WordBubble:
       self.connector.turn_to(turn=triangle_turn)
     else:
       raise Exception("not implemented")
+    
+  def stretch(self, diamond_override, stretch):
+    orig_x = {'l' : self.left, 'c' : self.center_x, 'r' : self.right}[self.position[0]]
+    orig_y = {'b' : self.bottom, 'c' : self.center_y, 't' : self.top}[self.position[1]]
+    if self.connector:
+      self.connector.stretch(diamond_override=diamond_override, stretch=stretch)
+    shift = (np.array([orig_x, orig_y]) - np.array(diamond_override)) * (stretch - 1.)
+    self.shift_to_position(xy=shift+np.array([orig_x, orig_y]), position=self.position)
+    self.set_text(self.get_text())
+
+  def set_fontsize(self, size):
+    for tb in self.text_boxes:
+      tb.set_fontsize(size)
+    self.set_text(self.get_text())
 
 def draw_a_speech_bubble(text, x, y, position=None, **kwargs):
   wb = WordBubble(text, x, y, **kwargs)
