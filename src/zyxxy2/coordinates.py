@@ -178,7 +178,7 @@ def _get_rect_diamond_names( **unfiltered_kwargs):
 
 ############################################################################################################
 def _calc_extra_shift(contour, diamond_names):                        
-  extra_shift = [0, 0]
+  extra_shift = np.array([0., 0.])
   if 'left' == diamond_names[0]:
     extra_shift[0] =  - min(contour[:, 0])
   elif 'right' == diamond_names[0]:

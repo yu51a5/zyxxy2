@@ -40,7 +40,6 @@ class ShapeFormAttribute:
 
   def __set__(self, instance, val):
     if self.name in instance.shape_kwargs:
-      instance.shape_kwargs[self.name] = val
       instance.set_shape_parameters(**{self.name : val})
     else:
       raise Exception(f'Could not find {self.name}. Available keys: {", ".join(instance.shape_kwargs.keys())}')
@@ -335,6 +334,11 @@ class Shape:
 ##################################################################
 
   def _update_the_shape_of_the_Shape(self, contour):
+    if self.shapename in ["a_rectangle", "a_square"]:
+      extra_shift = coordinates._calc_extra_shift(contour=contour, 
+                                                                diamond_names=self.diamond_names)   
+      contour += extra_shift
+  
     for what in [self.line, self.outline, self.patch]:
       if what is not None:
         Shape._set_xy(what, contour)
@@ -343,11 +347,6 @@ class Shape:
     self._update_diamond(new_diamond_coords=[0., 0.])
 
     self._move_by_matrix_around_diamond() # correct for clipping contours
-
-    if self.shapename in ["a_rectangle", "a_square"]:
-      extra_shift = coordinates._calc_extra_shift(contour=self.get_xy(), 
-                                                                diamond_names=self.diamond_names)   
-      shift += extra_shift
 
     self.shift(shift=shift)
 
