@@ -33,46 +33,10 @@ text_height = 1.5
 shape_height = 5
 canvas_width = 71 
 canvas_height = 53
+c1 = 2
+c2 = 1
 
-def draw_all_shapes2():
-  sb = draw_a_speech_bubble(text='Run demo_shape.py to see how the shape parameters work!', 
-                            x=canvas_width/2, y=gap, position='cb', 
-                            fontsize=10, background_color='plum')
- 
-  titles_bottom = sb.top+5*gap+2*(text_height+shape_height)
-  titles_top = titles_bottom + 6
-  rects = []
-  set_default_linewidth(5)
-  for width_coeff, color, bottom in [[1,  'plum',  0], 
-                                    [1, 'white',  sb.top+gap], 
-                                    [.5, 'black', titles_bottom+gap/2],
-                                    [1, 'black',  titles_top-gap/2], 
-                                    [1,  'plum',  titles_top+2*gap+(text_height+shape_height)]]:
-    r = draw_a_rectangle(bottom=bottom, height=canvas_height-bottom, left=0, 
-                     width=width_coeff*canvas_width, color=color, layer_nb=-2, outline_layer_nb=-2)
-    rects.append(r)
-  return None, rects, None
-
-
-def draw_all_shapes(gap=1, text_height=1.5, shape_height=5, c1=2, c2=1):
-
-  canvas_width = 71 
-  canvas_height = 53
-
-  smile = build_a_smile(width=3, depth=0.5)
-  zigzag = build_a_zigzag(width=3, height=0.5, angle_start=-3, nb_segments=6)
-  zigzag += -zigzag[0] + smile[-1] + [0, 3.5]
-  a_curve = np.concatenate((smile, zigzag), axis=0)
-  a_random_curve = [[random()*3.5, random()*3.5] for _ in range(randint(15, 25))]
-
-  shape_names_params_dicts_definition_plus = {k : v for k, v in shape_names_params_dicts_definition.items()}
-  shape_names_params_dicts_definition_plus.update({'a_polygon' : {}, 'a_broken_line' : {}})
-
-  sb = draw_a_speech_bubble(text='Run demo_shape.py to see how the shape parameters work!', 
-                            x=canvas_width/2, y=gap, position='cb', 
-                            fontsize=10, background_color='plum')
-
-  shape_positions_colors_params = [ 
+shape_positions_colors_params = [ 
                               [['a_square', 'superBlue'], 
                               ['a_rectangle', 'superGold'], 
                               ['a_triangle', 'superOrange'],
@@ -112,11 +76,26 @@ def draw_all_shapes(gap=1, text_height=1.5, shape_height=5, c1=2, c2=1):
                                 ['an_arc', 'turquoise', 'shift_x', 1.5], 
                                 ['a_zigzag', 'turquoise', 'shift_y', 1.5]]]
 
+def draw_all_shapes():
+
+  smile = build_a_smile(width=3, depth=0.5)
+  zigzag = build_a_zigzag(width=3, height=0.5, angle_start=-3, nb_segments=6)
+  zigzag += -zigzag[0] + smile[-1] + [0, 3.5]
+  a_curve = np.concatenate((smile, zigzag), axis=0)
+  a_random_curve = [[random()*3.5, random()*3.5] for _ in range(randint(15, 25))]
+
+  shape_names_params_dicts_definition_plus = {'a_polygon' : {}, 'a_broken_line' : {}, 
+                                              **shape_names_params_dicts_definition}
+
+  sb = draw_a_speech_bubble(text='Run try_shapes() to see how the shape parameters work!', 
+                            x=canvas_width/2, y=gap, position='cb', 
+                            fontsize=10, background_color='plum')
+
   titles_bottom = sb.top+5*gap+2*(text_height+shape_height)
   titles_top = titles_bottom + 6
 
   set_default_linewidth(5)
-  for width_coeff, color, bottom in [[1,  'plum',  0], 
+  for width_coeff, color, bottom in[[1,  'plum',  0], 
                                     [1, 'white',  sb.top+gap], 
                                     [.5, 'black', titles_bottom+gap/2],
                                     [1, 'black',  titles_top-gap/2], 
@@ -157,7 +136,7 @@ def draw_all_shapes(gap=1, text_height=1.5, shape_height=5, c1=2, c2=1):
                 contour=a_curve if shapename in ('a_polygon', 'a_broken_line') else shapename)]
 
       zoom_factor = 1.
-      if (len(shapes_info) >= 3 and i != 3) or (len(shapes_info) == 5 and i == 3):
+      if ((len(shapes_info) >= 3) if i != 3 else (len(shapes_info) == 5)):
         zoom_or_params = shapes_info[2 if i != 3 else -1]
         if not isinstance(zoom_or_params, dict):
           zoom_factor = zoom_or_params
@@ -189,7 +168,7 @@ def draw_all_shapes(gap=1, text_height=1.5, shape_height=5, c1=2, c2=1):
         shs[0].opacity = .5
         shs[1].color = 'superPink'
 
-      sr = draw_a_rectangle(left=0, width=0, bottom=text_y-gap/2, height=text_height+shape_height+gap,
+      sr = draw_a_rectangle(left=0, width=5, bottom=text_y-gap/2, height=text_height+shape_height+gap,
                             outline_color=text_color, color='none')
       shapes_texts_rectangles[-1].append([shs, sb_, sr])
 

@@ -344,6 +344,11 @@ class Shape:
 
     self._move_by_matrix_around_diamond() # correct for clipping contours
 
+    if self.shapename in ["a_rectangle", "a_square"]:
+      extra_shift = coordinates._calc_extra_shift(contour=self.get_xy(), 
+                                                                diamond_names=self.diamond_names)   
+      shift += extra_shift
+
     self.shift(shift=shift)
 
 ##################################################################
@@ -403,24 +408,13 @@ class Shape:
     # apply directional stretch
     self._move_by_matrix_around_diamond(matrix=self.directional_stretch_matrix)
 
+    self.diamond_names = [None, None]
     # apply the shift
     if self.shapename in ["a_rectangle", "a_square"]:
-
-      useful_args = {key: kwargs_common[key] for key in ['left', 'center_x', 'right', 'bottom', 'center_y', 'top'] if key in kwargs_common}
-
-      if 'center' in kwargs_common:
-        useful_args['center_x'] = kwargs_common['center'][0]
-        useful_args['center_y'] = kwargs_common['center'][1]
-
-      if 'diamond' in kwargs_common:
-        useful_args['center_x'] = kwargs_common['diamond'][0]
-        useful_args['center_y'] = kwargs_common['diamond'][1]
-
-      if ('diamond_x' in kwargs_common) and ('diamond_y' in kwargs_common):
-        useful_args['center_x'] = kwargs_common['diamond_x']
-        useful_args['center_y'] = kwargs_common['diamond_y']
-
-      new_contour = coordinates._init_shift(contour=self.get_xy(), **useful_args)    
+      contour = self.get_xy()
+      self.diamond_names = coordinates._get_rect_diamond_names(**kwargs_common)
+      extra_shift = coordinates._calc_extra_shift(contour=contour, diamond_names=self.diamond_names)
+      new_contour = contour + extra_shift
 
       # updating the elements
       for what in [self.line, self.outline, self.patch]:

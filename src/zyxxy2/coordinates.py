@@ -150,30 +150,50 @@ shape_names_params_dicts_definition = {
 sin_cos_std = [[sin(a/default_vertices_qty_in_circle*full_turn_angle), cos(a/default_vertices_qty_in_circle*full_turn_angle)] for a in range(default_vertices_qty_in_circle)]
 
 ############################################################################################################
-def _init_shift(contour, left=None, center_x=None, right=None, bottom=None, center_y=None, top=None):
-  # checking that we the right number of inputs
-  how_many_are_defined = {'x' : (left is not None) + (center_x is not None) + (right is not None), 'y' :  (bottom is not None) + (center_y is not None) + (top is not None)}
-  errorMsg = ['One and only one ' + key + ' coordinate should be defined, but ' + str(value) + ' are defined' for key, value in how_many_are_defined.items() if value != 1]
-  if len(errorMsg) != 0:
-    raise Exception('; '.join(errorMsg))
+def _get_rect_diamond_names( **unfiltered_kwargs):
 
-  presumed_diamond = [abs(contour[0][0]), abs(contour[0][1])]
-  if left is not None:
-    presumed_diamond[0] *= -1
-  elif center_x is not None:
-    presumed_diamond[0] *= 0
-  elif right is not None:
-    pass
-  if bottom is not None:
-    presumed_diamond[1] *= -1
-  elif center_y is not None:
-    presumed_diamond[1] *= 0
-  elif top is not None:
-    pass
+  useful_args = {key: unfiltered_kwargs[key] for key in ['left', 'center_x', 'right', 'bottom', 'center_y', 'top'] if key in unfiltered_kwargs}
+
+  if 'center' in unfiltered_kwargs:
+    useful_args['center_x'] = unfiltered_kwargs['center'][0]
+    useful_args['center_y'] = unfiltered_kwargs['center'][1]
+
+  if 'diamond' in unfiltered_kwargs:
+    useful_args['center_x'] = unfiltered_kwargs['diamond'][0]
+    useful_args['center_y'] = unfiltered_kwargs['diamond'][1]
+
+  if ('diamond_x' in unfiltered_kwargs) and ('diamond_y' in unfiltered_kwargs):
+    useful_args['center_x'] = unfiltered_kwargs['diamond_x']
+    useful_args['center_y'] = unfiltered_kwargs['diamond_y']
+
+  useful_args = {'x' : {k : v for k, v in useful_args.items() if k in ('left', 'center_x', 'right') and v is not None},
+                 'y' : {k : v for k, v in useful_args.items() if k in ('bottom', 'center_y', 'top') and v is not None}}
   
-  contour -= presumed_diamond
+  # checking that we the right number of inputs
+  errorMsg = [f'One and only one {k} coordinate should be defined, but {str(len(v))} are defined.' for k, v in useful_args.items() if len(v) != 1]
+  if errorMsg:
+    raise Exception('\n'.join(errorMsg))
 
-  return contour
+  return [next(iter(useful_args['x'])), next(iter(useful_args['y']))]
+
+############################################################################################################
+def _calc_extra_shift(contour, diamond_names):                        
+  extra_shift = [0, 0]
+  if 'left' == diamond_names[0]:
+    extra_shift[0] =  - min(contour[:, 0])
+  elif 'right' == diamond_names[0]:
+    extra_shift[0] =  - max(contour[:, 0])
+  elif 'center_x' == diamond_names[0]:
+    extra_shift[0] = - (min(contour[:, 0]) + max(contour[:, 0])) / 2
+
+  if 'bottom' == diamond_names[1]:
+    extra_shift[1] = - min(contour[:, 1])
+  elif 'top' == diamond_names[1]:
+    extra_shift[1] = - max(contour[:, 1])
+  elif 'center_y' == diamond_names[1]:
+    extra_shift[1] = - (min(contour[:, 1]) + max(contour[:, 1])) / 2
+
+  return extra_shift
 
 # a rectangle ######################################################
 def build_a_rectangle(height, width):
