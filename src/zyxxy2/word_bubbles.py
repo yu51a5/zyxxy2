@@ -141,7 +141,7 @@ class WordBubble:
     return result
 
   def _get_what_to_move(self):
-    result = [] if self.connector is None else [self.connector]
+    result = self.connector._get_what_to_move() if self.connector else []
     result += self.text_boxes
     return result
 
