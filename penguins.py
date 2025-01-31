@@ -11,7 +11,7 @@ def draw_a_semicircle(turn, **kwargs):
 ## THE PENGUINS                                        ##
 #########################################################
 def example_penguins(model="https://i.pinimg.com/564x/fc/90/7d/fc907dc3638cfd64aa2c3ba56e216b92.jpg",
-                     snowflakes_qty=15, ice_shards_qty=80, sas=True, draw_Bella=True):
+                     snowflakes_qty=150, ice_shards_qty=800, sas=True, draw_Bella=True):
   
   def draw_an_orange_semicircle(turn, **kwargs):
     return draw_a_semicircle(turn=turn, radius=6, color='orangered', **kwargs)
@@ -54,6 +54,8 @@ def example_penguins(model="https://i.pinimg.com/564x/fc/90/7d/fc907dc3638cfd64a
                             radius_1=1, radius_2=3, ends_qty=8, color='aliceblue')
                                                       for _ in range(snowflakes_qty)]
 
+  new_layer()                                                    
+
   # penguins!
 
   # the penguin on the right
@@ -74,7 +76,7 @@ def example_penguins(model="https://i.pinimg.com/564x/fc/90/7d/fc907dc3638cfd64a
   if draw_Bella:
     left_wing, right_wing = None, None
     set_default_patch_style(color='mistyrose')
-    set_default_outline_style(color='black', linewidth=5)
+    set_default_outline_style(color='black', linewidth=5, layer_nb=1)
 
     for s in [-1, 1]:
       draw_a_rectangle(center_x=50+s*3, bottom=5, height=30, width=5)
@@ -82,11 +84,6 @@ def example_penguins(model="https://i.pinimg.com/564x/fc/90/7d/fc907dc3638cfd64a
                     color='black')
       shoe.stretch_x(2)
       draw_a_rectangle(center_x=50+s*10, top=65, height=28, width=5, turn=-1.2*s)
-
-    draw_a_rectangle(center_x=50, bottom=62, width=10, height=20, layer_nb=5, outline_layer_nb=5)
-    draw_a_circle(center=(50, 80), radius=10, layer_nb=5, outline_layer_nb=5)
-    draw_a_sector(center=(50, 68), angle_start=3, angle_end=9, radius=10, radius_2=5, 
-                  layer_nb=15, outline_layer_nb=15, color='white')
     
     ht, hb = 48, 53
     top_dress = draw_a_triangle(tip=(50, 67-ht), height=ht, width=27, outline_linewidth=10)
@@ -100,11 +97,32 @@ def example_penguins(model="https://i.pinimg.com/564x/fc/90/7d/fc907dc3638cfd64a
     for clip in [top_dress, bottom_dress]:
       draw_a_rectangle(center=(50, 48), width=30, height=8, color='blue', clip_outline=clip)
 
+    set_default_patch_style(color='yellow')
+    pc = build_a_power_curve(end_1=-10, end_2=10, power=4, nb_intermediate_points=50)
+    poly = draw_a_polygon(diamond_x=36.6, diamond_y=69, contour=pc)
+    poly.stretch_y(-.003)
+    poly.stretch_x(1.5)
+
+    draw_a_rectangle(center_x=50, bottom=62, width=10, height=20, color='mistyrose')
+    draw_a_circle(center=(50, 80), radius=10, color='mistyrose')
+
+    for j in [-1, 1]:
+      draw_a_semicircle(radius=11, center=(50+j*2, 87), turn=9+j)
+      draw_a_crescent(width=6.0, depth_1=-2, depth_2=2, center=(50-5*j, 82), 
+                      color='white', outline_color='black', outline_linewidth=3, outline_layer_nb=5)
+      draw_a_circle(radius=2, center=(50-5*j, 82), color='chocolate')
+      draw_a_circle(radius=1, center=(50-5*j+.5, 82), color='black')
+
+    draw_a_smile(color='red', linewidth=10, width=8, depth=2, center=(50, 75))      
+
+    draw_a_sector(center=(50, 68), angle_start=3, angle_end=9, radius=10, radius_2=5, 
+                  color='white')
+
     # beck
     handle = draw_a_broken_line(contour=[[75, 45], [50, 80]], linewidth=15, layer_nb=100)
-    beck = draw_an_orange_semicircle(diamond=[65, 75], turn=9 + 1/2, outline_linewidth=0, layer_nb=100)
-    head = draw_a_circle(diamond=[50, 80], radius=15, color='black', layer_nb=100)
-    eye = draw_a_circle(diamond=[57, 85], radius=3, color=None, outline_color='white', 
+    draw_an_orange_semicircle(diamond=[65, 75], turn=9 + 1/2, outline_linewidth=0, layer_nb=100)
+    draw_a_circle(diamond=[50, 80], radius=15, color='black', layer_nb=100)
+    draw_a_circle(diamond=[57, 85], radius=3, color=None, outline_color='white', 
                         outline_linewidth=5, outline_layer_nb=100, layer_nb=100)    
 
     
@@ -127,6 +145,7 @@ def example_penguins(model="https://i.pinimg.com/564x/fc/90/7d/fc907dc3638cfd64a
   text_left = draw_a_speech_bubble(text="I don't know...",x=110, y=120, position='ct', start=[ 88, 85], background_color='white')
 
   if sas:
+    turn_layers(turn=-6., diamond=[75, 45], layer_nbs=[100])
     show_and_save()
   return snowflakes, (left_wing, right_wing), (text_left, text_right), (100, [75, 45])
 
@@ -178,8 +197,6 @@ def penguins_animation(snowflake_shift=1/3, frames_qty=102):
       right_wing.turn(-turn, diamond_override=wing_diamond)
 
   show_and_save(animation_func=animate, animation_init=init_func, nb_of_frames=frames_qty)
-
-  #  animation_interval=100)
 
 #########################################################
 def Bella_animation(snowflake_shift=1/3, frames_qty=175):
