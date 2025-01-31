@@ -98,13 +98,16 @@ def draw_all_shapes():
   titles_top = titles_bottom + 6
 
   set_default_linewidth(5)
+  rectangles_background = []
   for width_coeff, color, bottom in[[1,  'plum',  0], 
                                     [1, 'white',  sb.top+gap], 
                                     [.5, 'black', titles_bottom+gap/2],
                                     [1, 'black',  titles_top-gap/2], 
                                     [1,  'plum',  titles_top+2*gap+(text_height+shape_height)]]:
-    draw_a_rectangle(bottom=bottom, height=canvas_height-bottom, left=0, 
-                         width=width_coeff*canvas_width, color=color, layer_nb=-2, outline_layer_nb=-2)
+    r = draw_a_rectangle(bottom=bottom, height=canvas_height-bottom, left=0, 
+                         width=width_coeff*canvas_width, color=color, layer_nb=-2, 
+                         outline_layer_nb=-2)
+    rectangles_background.append(r)
 
   bg_colors = ['black', 'black', 'white', 'black']
   text_ys = [sb.top+3*gap, sb.top+4*gap+1*(text_height+shape_height), 
@@ -202,7 +205,7 @@ def draw_all_shapes():
       title.shift((0, -gap))
     shift_layers(shift=(canvas_width*coeff, pos_y), layer_nbs=[lnb1])
 
-  return shapes_texts_rectangles
+  return rectangles_background, shapes_texts_rectangles
 
 def place_shapes_texts_rectangles(shapes_texts_rectangles, gap_x):
   x_so_far = 0
@@ -233,7 +236,7 @@ def place_shapes_texts_rectangles(shapes_texts_rectangles, gap_x):
 
 def view_all_shapes(gap_x=1):
   create_canvas_and_axes(canvas_width=71, canvas_height=53)
-  shapes_texts_rectangles = draw_all_shapes()
+  _, shapes_texts_rectangles = draw_all_shapes()
   for strs in shapes_texts_rectangles:
     place_shapes_texts_rectangles(strs, gap_x=gap_x)
   show_and_save()
@@ -241,29 +244,36 @@ def view_all_shapes(gap_x=1):
 def view_all_shapes2(figsize=(11.69, 8.27), gap_x=0.5):
 
   create_canvas_and_axes(canvas_width=figsize[0], canvas_height=figsize[1])
-  shapes_texts_rectangles = draw_all_shapes()
+  rectangles_background, shapes_texts_rectangles = draw_all_shapes()
   
   _gca = plt.gca()
   orig_xy = np.array([71, 53])
   max_xy = np.array([_gca.get_xlim()[1], _gca.get_ylim()[1]])
 
-  stretch_layers(diamond=(0, 0), stretch=min(max_xy/orig_xy))  
+  stretch_layers(diamond=(0, 0), stretch=min(max_xy/orig_xy))
+  shift_layers((0.5 * (_gca.get_xlim()[1] - orig_xy[0]*min(max_xy/orig_xy)), 0))  
+  for i, r in enumerate(rectangles_background):
+    r.left = 0.0
+    r.width = _gca.get_xlim()[1] * (1 - (i == 2) / 2) * r.width / (r.left - r.right)
   
   for strs in shapes_texts_rectangles:
     place_shapes_texts_rectangles(strs, gap_x=gap_x)
-
+  
   show_and_save(filename='demo2.png')
 
 def print_all_shapes(filename='all_zyxxy_shapes', figsize=(11.69, 8.27), gap_x=0.5): #  # 
   create_a_page(page_size=figsize, dpi=200)
-  shapes_texts_rectangles = draw_all_shapes()
+  rectangles_background, shapes_texts_rectangles = draw_all_shapes()
 
   _gca = plt.gca()
   orig_xy = np.array([canvas_width, canvas_height])
   max_xy = np.array([_gca.get_xlim()[1], _gca.get_ylim()[1]])
-  stretch_layers(diamond=orig_xy/2., stretch=min(max_xy/orig_xy)) # 
-  shift_layers(shift=(max_xy-orig_xy)/2.)
+  stretch_layers(diamond=(0, 0), stretch=min(max_xy/orig_xy))
+  shift_layers((0.5 * (_gca.get_xlim()[1] - orig_xy[0]*min(max_xy/orig_xy)), 0)) 
+  for i, r in enumerate(rectangles_background):
+    r.left = 0.0
+    r.width = _gca.get_xlim()[1] * (1 - (i == 2) / 2) * r.width / (r.left - r.right)
   for strs in shapes_texts_rectangles:
     place_shapes_texts_rectangles(strs, gap_x=gap_x)
-
+  
   create_a_pdf(filename=filename, show=False, pdf_info={'Title' : filename})
