@@ -11,20 +11,24 @@ def draw_a_semicircle(turn, **kwargs):
 ## THE PENGUINS                                        ##
 #########################################################
 def example_penguins(model="https://i.pinimg.com/564x/fc/90/7d/fc907dc3638cfd64aa2c3ba56e216b92.jpg",
-                     snowflakes_qty=150, ice_shards_qty=800, sas=True):
+                     snowflakes_qty=15, ice_shards_qty=80, sas=True, draw_Bella=True):
   
-  def draw_orange_semicircle(turn, **kwargs):
+  def draw_an_orange_semicircle(turn, **kwargs):
     return draw_a_semicircle(turn=turn, radius=6, color='orangered', **kwargs)
 
-  def draw_big_semicircle(turn, **kwargs):
+  def draw_a_big_semicircle(turn, **kwargs):
     return draw_a_semicircle(turn=turn, radius=30, **kwargs)
 
   def draw_head_and_eyes(center_x_head, centers_x_eyes):
     # head
-    draw_a_circle(diamond=[center_x_head, 80], radius=15, color='black')
+    head = draw_a_circle(diamond=[center_x_head, 80], radius=15, color='black')
     # eyes
+    eyes = []
     for center_x_eyes in centers_x_eyes:
-      draw_a_circle(diamond=[center_x_eyes, 85], radius=3, color=None, outline_color='white', outline_linewidth=5)
+      eye = draw_a_circle(diamond=[center_x_eyes, 85], radius=3, color=None, outline_color='white', outline_linewidth=5)
+      eyes.append(eye)
+
+    return head, eyes
   #######################################################
   # Creating the canvas!                               ##  
   create_canvas_and_axes(canvas_width=320,
@@ -54,44 +58,95 @@ def example_penguins(model="https://i.pinimg.com/564x/fc/90/7d/fc907dc3638cfd64a
 
   # the penguin on the right
   # first foot 
-  draw_orange_semicircle(diamond=[270, 16], turn=9)
+  draw_an_orange_semicircle(diamond=[270, 16], turn=9)
   # body - white
-  draw_big_semicircle(diamond=[280, 50], color='white', turn=5)
+  draw_a_big_semicircle(diamond=[280, 50], color='white', turn=5)
   # second foot 
-  draw_orange_semicircle(diamond=[280, 15], turn=8)
+  draw_an_orange_semicircle(diamond=[280, 15], turn=8)
   # body - black
-  draw_big_semicircle(diamond=[290, 50], color='black', turn=5)
+  draw_a_big_semicircle(diamond=[290, 50], color='black', turn=5)
   # beck
-  draw_orange_semicircle(diamond=[255, 75], turn=8 + 1/2)
+  draw_an_orange_semicircle(diamond=[255, 75], turn=8 + 1/2)
   # head and an eye
   draw_head_and_eyes(center_x_head=270, centers_x_eyes=[263])
 
  # the penguin on the left
+  if draw_Bella:
+    left_wing, right_wing = None, None
+    set_default_patch_style(color='mistyrose')
+    set_default_outline_style(color='black', linewidth=5)
+
+    for s in [-1, 1]:
+      draw_a_rectangle(center_x=50+s*3, bottom=5, height=30, width=5)
+      shoe = draw_a_sector(center=(50+s*.5, 4.5), angle_start=0, angle_end=s*3, radius=5, 
+                    color='black')
+      shoe.stretch_x(2)
+      draw_a_rectangle(center_x=50+s*10, top=65, height=28, width=5, turn=-1.2*s)
+
+    draw_a_rectangle(center_x=50, bottom=62, width=10, height=20, layer_nb=5, outline_layer_nb=5)
+    draw_a_circle(center=(50, 80), radius=10, layer_nb=5, outline_layer_nb=5)
+    draw_a_sector(center=(50, 68), angle_start=3, angle_end=9, radius=10, radius_2=5, 
+                  layer_nb=15, outline_layer_nb=15, color='white')
+    
+    ht, hb = 48, 53
+    top_dress = draw_a_triangle(tip=(50, 67-ht), height=ht, width=27, outline_linewidth=10)
+    bottom_dress = draw_a_triangle(tip=(50, 68-50+hb), height=-hb, width=40, outline_linewidth=10)
+    
+    for x in range(11):
+      for y in range(20):
+        draw_a_square(center=(30+4*x, 65-4*y), side=4, color='red' if (x-y)%2 else 'forestgreen', 
+                      outline_color=None, clip_outline=top_dress if (66-4*y) > 48 else bottom_dress)
+        
+    for clip in [top_dress, bottom_dress]:
+      draw_a_rectangle(center=(50, 48), width=30, height=8, color='blue', clip_outline=clip)
+
+    # beck
+    handle = draw_a_broken_line(contour=[[75, 45], [50, 80]], linewidth=15, layer_nb=100)
+    beck = draw_an_orange_semicircle(diamond=[65, 75], turn=9 + 1/2, outline_linewidth=0, layer_nb=100)
+    head = draw_a_circle(diamond=[50, 80], radius=15, color='black', layer_nb=100)
+    eye = draw_a_circle(diamond=[57, 85], radius=3, color=None, outline_color='white', 
+                        outline_linewidth=5, outline_layer_nb=100, layer_nb=100)    
+
+    
+  else:
   # body
-  draw_a_circle(diamond=[60, 45], radius=25, color='white')
-  # feet
-  draw_orange_semicircle(diamond=[54, 16], turn=8.5)
-  draw_orange_semicircle(diamond=[66, 16], turn=9.5)
-  # head and the eyes
-  draw_head_and_eyes(center_x_head=60, centers_x_eyes=[55, 65])
-  # wings
-  right_wing = draw_big_semicircle(diamond=[31, 60], color='black', turn=2)
-  left_wing = draw_big_semicircle(diamond=[89, 60], color='black', turn=4)
-  # beck
-  draw_an_elliptic_sector(diamond=[58, 76], angle_start=0, angle_end=3, height=12, width=18, turn=0.5, color='orangered')
+    draw_a_circle(diamond=[60, 45], radius=25, color='white')
+    # feet
+    draw_an_orange_semicircle(diamond=[54, 16], turn=8.5)
+    draw_an_orange_semicircle(diamond=[66, 16], turn=9.5)
+    # head and the eyes
+    draw_head_and_eyes(center_x_head=60, centers_x_eyes=[55, 65])
+    # wings
+    right_wing = draw_a_big_semicircle(diamond=[31, 60], color='black', turn=2)
+    left_wing = draw_a_big_semicircle(diamond=[89, 60], color='black', turn=4)
+    # beck
+    draw_an_elliptic_sector(diamond=[58, 76], angle_start=0, angle_end=3, height=12, width=18, turn=0.5, color='orangered')
 
   set_default_text_style(linewidth=5, fontsize=20, triangle_width=8)
   text_right = draw_a_speech_bubble(text="Where is fish?", x =180, y=120, position='lt', start=[240, 85], background_color='white')
-  text_left = draw_a_speech_bubble(text="I don't know...",x=140, y=120, position='rt', start=[ 82, 85], background_color='white')
+  text_left = draw_a_speech_bubble(text="I don't know...",x=110, y=120, position='ct', start=[ 88, 85], background_color='white')
 
   if sas:
     show_and_save()
-  return snowflakes, left_wing, right_wing, text_left, text_right
+  return snowflakes, (left_wing, right_wing), (text_left, text_right), (100, [75, 45])
+
+def when_to_show_text(i, text_bubbles, which_bubble, text, start, interval):
+  words = text.split(' ')
+  words = [w for w in words if w]
+  if i == start:
+    text_bubbles[1-which_bubble].make_invisible()
+    text_bubbles[which_bubble].make_visible()
+
+  for w in range(len(words)):
+    if i == (start + interval * w):
+      new_words = ' '.join(words[:w+1])
+      text_bubbles[which_bubble].set_text(new_words + ' ' * (len(text) - len(new_words)))
+
 
 #########################################################
-def penguins_animation():
+def penguins_animation(snowflake_shift=1/3, frames_qty=102):
 
-  snowflakes, left_wing, right_wing, text_left, text_right = \
+  snowflakes, (left_wing, right_wing), text_bubbles, _ = \
     example_penguins(model=None, sas=False)
 
   wing_diamond = (60, 75)
@@ -101,9 +156,6 @@ def penguins_animation():
 
   # fish_layer = new_layer()
   # make_layers_invisible(fish_layer)
-
-  snowflake_shift=1/3
-  frames_qty=102
 
   for snowflake in snowflakes:
       snowflake.shift_y(-snowflake_shift*frames_qty)
@@ -115,17 +167,11 @@ def penguins_animation():
   def animate(i):
     for snowflake in snowflakes:
       snowflake.shift_y(-snowflake_shift)
-    if i == 0:
-      text_left.make_invisible()
-      text_right.make_visible()
-      text_right.set_text("Where         ")
-    if i == 12:
-      text_right.set_text("Where is      ")
-    if i == 24:
-      text_right.set_text("Where is fish?")
+    when_to_show_text(i, text_bubbles=text_bubbles, which_bubble=1, 
+                      text="Where is fish?", start=0, interval=12)
     if i == 48:
-      text_right.make_invisible()
-      text_left.make_visible()
+      text_bubbles[1].make_invisible()
+      text_bubbles[0].make_visible()
     if i >= 72:
       turn = -1/30 if i < 87 else 1/30
       left_wing.turn( turn, diamond_override=wing_diamond)
@@ -135,6 +181,39 @@ def penguins_animation():
 
   #  animation_interval=100)
 
+#########################################################
+def Bella_animation(snowflake_shift=1/3, frames_qty=175):
+
+  snowflakes, _, text_bubbles, (mask_layer, turn_center) = \
+    example_penguins(model=None, sas=False)
+
+  for snowflake in snowflakes:
+      snowflake.shift_y(-snowflake_shift*frames_qty)
+
+  def init_func():
+    for snowflake in snowflakes:
+      snowflake.shift_y(snowflake_shift*frames_qty)
+    for tb in text_bubbles:
+      tb.make_invisible()
+
+  def animate(i):
+    for snowflake in snowflakes:
+      snowflake.shift_y(-snowflake_shift)
+    when_to_show_text(i, text_bubbles=text_bubbles, which_bubble=1, 
+                      text="Who are you?  ", start=0, interval=12)
+    when_to_show_text(i, text_bubbles=text_bubbles, which_bubble=0, 
+                      text="Bella", start=40, interval=12)
+    if i == 56:
+      text_bubbles[0].make_invisible()
+    if 75 >= i >= 56:
+      turn_layers(turn=-6./20, diamond=turn_center, layer_nbs=[mask_layer])
+    when_to_show_text(i, text_bubbles=text_bubbles, which_bubble=1, 
+                      text="Who are you now?", start=75, interval=12)
+    when_to_show_text(i, text_bubbles=text_bubbles, which_bubble=0, 
+                      text="Penguin Isabella", start=135, interval=12)
+
+  show_and_save(animation_func=animate, animation_init=init_func, nb_of_frames=frames_qty)
+  
 ##################################################################################################################
 
-penguins_animation() # example_penguins() # 
+Bella_animation() # example_penguins() # penguins_animation() # 
