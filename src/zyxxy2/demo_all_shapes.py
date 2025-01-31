@@ -202,12 +202,9 @@ def draw_all_shapes():
       title.shift((0, -gap))
     shift_layers(shift=(canvas_width*coeff, pos_y), layer_nbs=[lnb1])
 
-  for strs in shapes_texts_rectangles:
-    place_shapes_texts_rectangles(strs)
-
   return shapes_texts_rectangles
 
-def place_shapes_texts_rectangles(shapes_texts_rectangles):
+def place_shapes_texts_rectangles(shapes_texts_rectangles, gap_x):
   x_so_far = 0
   for shs, sb_, rs in shapes_texts_rectangles:
     shapes_center_x = (min([sh.left for sh in shs]) + max([sh.right for sh in shs])) / 2 
@@ -218,13 +215,15 @@ def place_shapes_texts_rectangles(shapes_texts_rectangles):
       for sh_ in shs:
         sh_.shift(text_center_x - shapes_center_x)
     
-    left_here = min([sh.left for sh in (shs + [sb_])])
-    for s in shs + [sb_]:
-      s.shift_x(x_so_far + gap / 2. - left_here)
+    shift_x = x_so_far + gap_x / 2. - min([sh.left for sh in (shs + [sb_])])
+    shift_y = (sb_.top + rs.top) / 2 - (min([sh.bottom for sh in shs]) + max([sh.top for sh in shs])) / 2
+    sb_.shift_x(shift_x)
+    for s in shs:
+      s.shift((shift_x, shift_y))
     
     right_sh = max([sh.right for sh in (shs + [sb_])])
     rs.left = x_so_far 
-    x_so_far = right_sh + gap / 2.
+    x_so_far = right_sh + gap_x / 2.
     rs.width = (x_so_far - rs.left) / rs.move_matrix[0][0]
 
   c_shift = (plt.gca().get_xlim()[1] - rs.right) / 2
@@ -232,12 +231,14 @@ def place_shapes_texts_rectangles(shapes_texts_rectangles):
     for s in shs + [sb_, rs]:
       s.shift_x(c_shift)
 
-def view_all_shapes():
+def view_all_shapes(gap_x=1):
   create_canvas_and_axes(canvas_width=71, canvas_height=53)
-  draw_all_shapes()
+  shapes_texts_rectangles = draw_all_shapes()
+  for strs in shapes_texts_rectangles:
+    place_shapes_texts_rectangles(strs, gap_x=gap_x)
   show_and_save()
 
-def view_all_shapes2(figsize=(11.69, 8.27)):
+def view_all_shapes2(figsize=(11.69, 8.27), gap_x=0.5):
 
   create_canvas_and_axes(canvas_width=figsize[0], canvas_height=figsize[1])
   shapes_texts_rectangles = draw_all_shapes()
@@ -249,12 +250,11 @@ def view_all_shapes2(figsize=(11.69, 8.27)):
   stretch_layers(diamond=(0, 0), stretch=min(max_xy/orig_xy))  
   
   for strs in shapes_texts_rectangles:
-    print(2.5, strs[0][1].get_text(), strs[0][0][0].center_x, strs[0][0][0].diamond_names, strs[0][0][0].diamond_coords, strs[0][1].center_x, strs[0][1].position, strs[0][2].center_x)
-    place_shapes_texts_rectangles(strs)
-    print(3  , strs[0][1].get_text(), strs[0][0][0].center_x, strs[0][0][0].diamond_names, strs[0][0][0].diamond_coords, strs[0][1].center_x, strs[0][1].position, strs[0][2].center_x)
+    place_shapes_texts_rectangles(strs, gap_x=gap_x)
+
   show_and_save(filename='demo2.png')
 
-def print_all_shapes(filename='all_zyxxy_shapes', figsize=(11.69, 8.27)): #  # 
+def print_all_shapes(filename='all_zyxxy_shapes', figsize=(11.69, 8.27), gap_x=0.5): #  # 
   create_a_page(page_size=figsize, dpi=200)
   shapes_texts_rectangles = draw_all_shapes()
 
@@ -264,6 +264,6 @@ def print_all_shapes(filename='all_zyxxy_shapes', figsize=(11.69, 8.27)): #  #
   stretch_layers(diamond=orig_xy/2., stretch=min(max_xy/orig_xy)) # 
   shift_layers(shift=(max_xy-orig_xy)/2.)
   for strs in shapes_texts_rectangles:
-    place_shapes_texts_rectangles(strs)
+    place_shapes_texts_rectangles(strs, gap_x=gap_x)
 
   create_a_pdf(filename=filename, show=False, pdf_info={'Title' : filename})
