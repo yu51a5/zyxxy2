@@ -18,14 +18,14 @@ import numpy as np
 from random import random, randint
 import matplotlib.pyplot as plt
 
-from .canvas import create_canvas_and_axes, show_and_save
+from .canvas import create_canvas_and_axes, show_and_save, wait_for_enter
 from .shape_functions import draw_a_circle, draw_a_rectangle, draw_a_broken_line, draw_a_polygon, clone_a_shape, draw_a_smile
 from .word_bubbles import draw_a_speech_bubble, WordBubble
 from .shape_style import set_default_linewidth
 from .coordinates import shape_names_params_dicts_definition, get_type_given_shapename, build_a_smile, build_a_zigzag
-from .settings import slider_range, default_image_params
+from .settings import slider_range
 from .layers import new_layer, shift_layers, stretch_layers_with_direction, stretch_layers
-from .pdf import create_a_pdf, create_a_page, get_all_children
+from .pdf import create_a_pdf, create_a_page
 from .shape_class import Shape
 
 gap = 1
@@ -43,8 +43,7 @@ shape_positions_colors_params = [
                               ['a_rhombus', 'superViolet'],
                               ['a_star', 'Purple', .6, ['orchid', .8, {'ends_qty' : 8, 'radius_1' : 3}]], 
                               ['a_regular_polygon', 'red', .9, ['orangered', .9, {'vertices_qty' : 8}]],
-                              ['a_polygon', 'turquoise', 1.0, ['darkturquoise', 1.]]],  
-                                    
+                              ['a_polygon', 'turquoise', 1.0, ['darkturquoise', 1.]]], 
                               [['a_circle', 'superPink', .8],
                               ['an_ellipse', 'Burgundy'],                             
                               ['a_drop', 'BubblePink'], 
@@ -76,20 +75,24 @@ shape_positions_colors_params = [
                                 ['an_arc', 'turquoise', 'shift_x', 1.5], 
                                 ['a_zigzag', 'turquoise', 'shift_y', 1.5]]]
 
-def draw_all_shapes():
-
+def get_funny_curves():
   smile = build_a_smile(width=3, depth=0.5)
   zigzag = build_a_zigzag(width=3, height=0.5, angle_start=-3, nb_segments=6)
   zigzag += -zigzag[0] + smile[-1] + [0, 3.5]
   a_curve = np.concatenate((smile, zigzag), axis=0)
   a_random_curve = [[random()*3.5, random()*3.5] for _ in range(randint(15, 25))]
+  return a_curve, a_random_curve 
 
-  shape_names_params_dicts_definition_plus = {'a_polygon' : {}, 'a_broken_line' : {}, 
-                                              **shape_names_params_dicts_definition}
+a_curve, a_random_curve = get_funny_curves()
+
+def draw_all_shapes():
 
   sb = draw_a_speech_bubble(text='Run try_shapes() to see how the shape parameters work!', 
                             x=canvas_width/2, y=gap, position='cb', 
                             fontsize=10, background_color='plum')
+  
+  shape_names_params_dicts_definition_plus = {'a_polygon' : {}, 'a_broken_line' : {}, 
+                                              **shape_names_params_dicts_definition}
 
   titles_bottom = sb.top+5*gap+2*(text_height+shape_height)
   titles_top = titles_bottom + 6
@@ -171,12 +174,13 @@ def draw_all_shapes():
       sr = draw_a_rectangle(left=0, width=5, bottom=text_y-gap/2, height=text_height+shape_height+gap,
                             outline_color=text_color, color='none')
       shapes_texts_rectangles[-1].append([shs, sb_, sr])
+      
 
   for text_, coeff, text_color, bt, pos_y, eye_color in \
                   [['patches', .75, 'black', 'b', titles_bottom-gap/2, 'white'], 
                   ['lines', .25, 'white', 't', titles_top+gap/2, 'black'],
                   ['transformations', .5, 'black', 'b', sr.top, 'plum']]:
-
+    
     title = draw_a_speech_bubble(text=text_, fontsize=20,
                         x=canvas_width*coeff, y=pos_y+gap/2, 
                         position='c'+bt, color=text_color, background_color='none')
@@ -206,23 +210,27 @@ def draw_all_shapes():
 def place_shapes_texts_rectangles(shapes_texts_rectangles):
   x_so_far = 0
   for shs, sb_, rs in shapes_texts_rectangles:
-    center_shapes = (min([sh.left for sh in shs]) + max([sh.right for sh in shs])) / 2
-    center_text = sb_.center_x
-    if center_shapes > center_text:
-      sb_.shift_x(center_shapes - center_text)
+    shapes_center_x = (min([sh.left for sh in shs]) + max([sh.right for sh in shs])) / 2 
+    text_center_x = sb_.center_x
+    if shapes_center_x > text_center_x:
+      sb_.center_x = shapes_center_x
     else:
       for sh_ in shs:
-        sh_.shift_x(center_text - center_shapes)
-    left_here = min([sh.left for sh in shs] + [sb_.left])
+        sh_.shift(text_center_x - shapes_center_x)
+    
+    left_here = min([sh.left for sh in (shs + [sb_])])
     for s in shs + [sb_]:
-      s.shift_x(x_so_far + gap / 2 - left_here)
+      s.shift_x(x_so_far + gap / 2. - left_here)
+    
     right_sh = max([sh.right for sh in (shs + [sb_])])
     rs.left = x_so_far 
-    x_so_far = right_sh + gap / 2
-    rs.width = x_so_far - rs.left
+    x_so_far = right_sh + gap / 2.
+    rs.width = (x_so_far - rs.left) / rs.move_matrix[0][0]
+
+  c_shift = (plt.gca().get_xlim()[1] - rs.right) / 2
   for shs, sb_, rs in shapes_texts_rectangles:
     for s in shs + [sb_, rs]:
-      s.shift_x((canvas_width - x_so_far) / 2)
+      s.shift_x(c_shift)
 
 def view_all_shapes():
   create_canvas_and_axes(canvas_width=71, canvas_height=53)
@@ -230,6 +238,7 @@ def view_all_shapes():
   show_and_save()
 
 def view_all_shapes2(figsize=(11.69, 8.27)):
+
   create_canvas_and_axes(canvas_width=figsize[0], canvas_height=figsize[1])
   shapes_texts_rectangles = draw_all_shapes()
   
@@ -237,11 +246,12 @@ def view_all_shapes2(figsize=(11.69, 8.27)):
   orig_xy = np.array([71, 53])
   max_xy = np.array([_gca.get_xlim()[1], _gca.get_ylim()[1]])
 
-  stretch_layers(diamond=orig_xy/2., stretch=min(max_xy/orig_xy)) 
-  shift_layers(shift=(max_xy-orig_xy)/2.)
+  stretch_layers(diamond=(0, 0), stretch=min(max_xy/orig_xy))  
+  
   for strs in shapes_texts_rectangles:
+    print(2.5, strs[0][1].get_text(), strs[0][0][0].center_x, strs[0][0][0].diamond_names, strs[0][0][0].diamond_coords, strs[0][1].center_x, strs[0][1].position, strs[0][2].center_x)
     place_shapes_texts_rectangles(strs)
-
+    print(3  , strs[0][1].get_text(), strs[0][0][0].center_x, strs[0][0][0].diamond_names, strs[0][0][0].diamond_coords, strs[0][1].center_x, strs[0][1].position, strs[0][2].center_x)
   show_and_save(filename='demo2.png')
 
 def print_all_shapes(filename='all_zyxxy_shapes', figsize=(11.69, 8.27)): #  # 
