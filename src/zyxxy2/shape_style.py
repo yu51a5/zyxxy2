@@ -236,7 +236,7 @@ style_params_howto = [["layer_nb", 'zorder', "patch|line|outline", None, None],
 
 ################################################################################################################################################
 def get_polygon_style(attr_name, style_name, parent, attr_override=None):
-  something = attr_override if attr_override is not None else getattr(
+  something = attr_override if attr_override else getattr(
     parent, attr_name)
   assert something is not None
   polys = []

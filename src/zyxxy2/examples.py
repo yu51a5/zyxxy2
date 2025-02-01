@@ -469,15 +469,15 @@ def example_animated_croc():
   leg_layer_nb, body_layer_nb, upper_jaw_layer_nb, eyelids, upper_jaw_diamond = draw_and_keep_drawing(example_croc, model=None)
 
   nb_blinks = 2
-  blink_frames = 6
+  blink_frames = 6 * 2
 
   nb_jaw_openings = 2
-  jaw_frames = 3
+  jaw_frames = 3 * 2
   max_jaw_opening_angle = 1
 
   nb_jumps = 2
   prep_jump_frames = 1
-  jump_frames = 3 
+  jump_frames = 3 * 2
   size_jump = 20
   nb_wait_frames = 2
 

@@ -1,13 +1,64 @@
 import datetime
 from pathlib import Path
 
-import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
-from .canvas import prepare_axes, _find_scale_place_axes
-from .word_bubbles import draw_a_speech_bubble
+from .canvas import place_axes
+from .word_bubbles import draw_a_speech_bubble, place_text
 from .utils import random_integer_number, random_element # get_random_int
+
+class paper_size:
+  inch = 1
+  cm = inch / 2.54
+
+  _W, _H = (21*cm, 29.7*cm)
+
+  A6 = (_W*.5, _H*.5)
+  A5 = (_H*.5, _W)
+  A4 = (_W, _H)
+  A3 = (_H, _W*2)
+  A2 = (_W*2, _H*2)
+  A1 = (_H*2, _W*4)
+  A0 = (_W*4, _H*4)
+
+  LETTER = (8.5*inch, 11*inch)
+  LEGAL = (8.5*inch, 14*inch)
+  ELEVENSEVENTEEN = (11*inch, 17*inch)
+  # lower case is deprecated as of 12/2001, but here
+  # for compatability
+  letter=LETTER
+  legal=LEGAL
+  elevenSeventeen = ELEVENSEVENTEEN
+
+  _BW, _BH = (25*cm, 35.3*cm)
+  B6 = (_BW*.5, _BH*.5)
+  B5 = (_BH*.5, _BW)
+  B4 = (_BW, _BH)
+  B3 = (_BH*2, _BW)
+  B2 = (_BW*2, _BH*2)
+  B1 = (_BH*4, _BW*2)
+  B0 = (_BW*4, _BH*4)
+
+  def get_figsize(init_figsize):
+    if isinstance(init_figsize, str) and \
+           ((init_figsize not in ('cm', 'inch')) and (init_figsize[0] != '_')): 
+      if hasattr(paper_size, init_figsize):
+        result = getattr(paper_size, init_figsize)
+        return result
+      if hasattr(paper_size, init_figsize[:-1]):
+        result = getattr(paper_size, init_figsize[:-1])
+        if init_figsize[-1] == 'l':
+          result = [max(result), min(result)]
+          return result
+        if init_figsize[-1] == 'p':
+          result = [min(result), max(result)]
+          return result
+    return init_figsize
+
+##########################################################################################
+
+
 
 ##########################################################################################
 def _get_inspirations():
@@ -30,64 +81,6 @@ def get_random_inspiration(name):
     else:
       insp = insp[:-1] + f", {name}!"
   return insp
-  
-##########################################################################################
-def get_all_children(parent=None):
-  new_children = [parent if parent else plt.gcf()]
-  result = []
-  while new_children:
-    new_new_children = []
-    for c in new_children:
-      new_new_children += c.get_children()
-    new_new_children = [c for c in new_new_children if isinstance(c, (plt.Axes, matplotlib.patches.Patch, matplotlib.text.Text))]
-    result = new_new_children + result
-    new_children = new_new_children
-  #result = plt.gca().get_children()
-  return result
-
-##########################################################################################
-def remove_what_possible_except(what_to_keep):
-  all_ = get_all_children()
-  for c in all_:
-    if c in what_to_keep:
-      continue
-    try:
-      c.remove()
-    except:
-      pass # print(c)
-
-##########################################################################################
-def place_text(text, x, y, **kwargs):
-  xlim = plt.gca().get_xlim() 
-  ylim = plt.gca().get_ylim() 
-  sb = draw_a_speech_bubble(text=text, x=x*(xlim[1]-xlim[0]), y=y*(ylim[1]-ylim[0]), **kwargs)
-  return sb
-
-##########################################################################################
-def place_axes(axes_bbox, canvas_width, canvas_height, gap_x, gap_y):
-
-  _ax = _find_scale_place_axes(
-    max_width=axes_bbox[1][0] - axes_bbox[0][0] - 2 * gap_x,
-    max_height=axes_bbox[1][1] - axes_bbox[0][1] - 2 * gap_y,
-    canvas_width=canvas_width,
-    canvas_height=canvas_height,
-    min_margin=0,
-    font_size={},
-    title_pad=0,
-    xlabel="",
-    ylabel="",
-    tick_step_x=None, tick_step_y=None,
-    xy=(axes_bbox[0][0]+gap_x, axes_bbox[0][1]+gap_y))
-
-  canvas_parameters = {
-    'canvas_width': canvas_width,
-    'canvas_height': canvas_height,
-    'tick_step_x': None,
-    'tick_step_y': None,
-    'add_border': False
-  }
-  prepare_axes(ax=_ax, **canvas_parameters)
-  return _ax
 
 ##########################################################################################
 def place_watermarks(generator, max_per_line=20, fontsize=8, layer_nb=-5, line_gap=1., color='lightgrey'):  
@@ -102,9 +95,11 @@ def place_watermarks(generator, max_per_line=20, fontsize=8, layer_nb=-5, line_g
 
 ##########################################################################################
 def create_a_page(page_size, dpi, wm_generator=None, header=None, header_fontsize=20, margin=.05, header_top_margin=.02, **wm_kwargs):
+  
+  figsize = paper_size.get_figsize(init_figsize=page_size) 
 
-  plt.figure(figsize=page_size, dpi=dpi)
-  place_axes(axes_bbox=[[margin, margin], [1-margin, 1-margin]], canvas_width=(1-2*margin)*page_size[0], canvas_height=(1-2*margin)*page_size[1], gap_x=0, gap_y=0)
+  plt.figure(figsize=figsize, dpi=dpi)
+  place_axes(axes_bbox=[[margin, margin], [1-margin, 1-margin]], canvas_width=(1-2*margin)*figsize[0], canvas_height=(1-2*margin)*figsize[1], gap_x=0, gap_y=0)
 
   if wm_generator:
     _wm_kwargs = {key[3:]:value for key, value in wm_kwargs.items()}

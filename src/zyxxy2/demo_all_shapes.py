@@ -241,7 +241,7 @@ def view_all_shapes(gap_x=1):
     place_shapes_texts_rectangles(strs, gap_x=gap_x)
   show_and_save()
 
-def print_all_shapes(filename='all_zyxxy_shapes', figsize=(11.69, 8.27), gap_x=0.5):
+def print_all_shapes(filename='all_zyxxy_shapes', figsize="A4l", gap_x=0.25):
   create_a_page(page_size=figsize, dpi=200)
   rectangles_background, shapes_texts_rectangles = draw_all_shapes()
 

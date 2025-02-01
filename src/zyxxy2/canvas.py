@@ -738,3 +738,30 @@ def show_demo():
     plt.savefig(fname=IMAGES_FOLDER + "/" + filename + '_screenshot.' +
                 image_format,
                 format=image_format)
+
+
+##########################################################################################
+def place_axes(axes_bbox, canvas_width, canvas_height, gap_x, gap_y):
+
+  _ax = _find_scale_place_axes(
+    max_width=axes_bbox[1][0] - axes_bbox[0][0] - 2 * gap_x,
+    max_height=axes_bbox[1][1] - axes_bbox[0][1] - 2 * gap_y,
+    canvas_width=canvas_width,
+    canvas_height=canvas_height,
+    min_margin=0,
+    font_size={},
+    title_pad=0,
+    xlabel="",
+    ylabel="",
+    tick_step_x=None, tick_step_y=None,
+    xy=(axes_bbox[0][0]+gap_x, axes_bbox[0][1]+gap_y))
+
+  canvas_parameters = {
+    'canvas_width': canvas_width,
+    'canvas_height': canvas_height,
+    'tick_step_x': None,
+    'tick_step_y': None,
+    'add_border': False
+  }
+  prepare_axes(ax=_ax, **canvas_parameters)
+  return _ax

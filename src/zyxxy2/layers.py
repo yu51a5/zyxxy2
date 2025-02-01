@@ -71,3 +71,9 @@ def stretch_layers_with_direction(diamond, stretch_coeff, stretch_direction, lay
   _shapes = Shape._get_all_shapes_in_layers(layer_nbs) + WordBubble.get_all_in_layers(layer_nbs)
   for shape in _shapes:
     shape.stretch_with_direction(diamond_override=diamond, stretch_coeff=stretch_coeff, direction=stretch_direction)
+
+##################################################################
+def remove_layers(layer_nbs=[]):
+  _shapes = Shape._get_all_shapes_in_layers(layer_nbs) + WordBubble.get_all_in_layers(layer_nbs)
+  for shape in _shapes:
+    shape.remove()

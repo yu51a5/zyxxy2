@@ -66,7 +66,7 @@ class ShapeStyleAttribute:
     if instance is None:
       return None # needed for the docs
     _p_name, _polygon = self.__get_polygon(instance)
-    return get_polygon_style(something=_polygon, attr_name=_p_name, style_name=self.name, parent=instance)
+    return get_polygon_style(parent=instance, attr_name=_p_name, style_name=self.name)
 
   def __set__(self, instance, val):
     _p_name, _polygon = self.__get_polygon(instance)
@@ -513,6 +513,12 @@ class Shape:
     all_candidates = [self.line, self.patch, self.outline] + self.clip_patches
     result = [r for r in all_candidates if r is not None]
     return result
+  
+##################################################################
+  def remove(self):
+    result = self._get_what_to_move()
+    for r in result:
+      r.remove()
 
 ##################################################################
   def shift(self, shift):
