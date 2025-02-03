@@ -19,6 +19,8 @@ from .utils import full_turn_angle
 
 screen_zoom = 1/2
 
+create_image_only = False
+
 # There are 148 beautiful pre-defined colors!
 # You can find them here:
 # https://matplotlib.org/stable/gallery/color/named_colors.html

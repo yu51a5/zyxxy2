@@ -18,11 +18,13 @@ import inspect
 import ntpath
 import numpy as np
 import os
-import datetime
+from io import BytesIO
+import base64
 from functools import partial
 from math import floor
 from matplotlib import animation
 from matplotlib.text import Text
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from collections.abc import Iterable
 
@@ -33,7 +35,7 @@ from .shape_class import Shape
 from .word_bubbles import WordBubble
 from .files import filename_to_image, show_image
 from .utils import equal_or_almost
-from .settings import default_font_sizes, default_display_params, default_image_params, default_animation_params, default_images_folder
+from .settings import create_image_only as create_image_only_, default_font_sizes, default_display_params, default_image_params, default_animation_params, default_images_folder
 
 USE_PLT_SHOW = True
 IMAGES_FOLDER = default_images_folder
@@ -45,6 +47,13 @@ WOULD_BE_AXES_LIMITS = None
 
 if not os.path.exists(IMAGES_FOLDER):
   os.makedirs(IMAGES_FOLDER)
+
+########################################################################
+create_image_only = create_image_only_
+current_lone_figure = None
+def set_default_color_etc_settings(val):
+  global create_image_only
+  create_image_only = val
 
 ########################################################################
 
@@ -486,12 +495,17 @@ def create_canvas_and_axes(
           margin['right'] += what_to_add
           figsize[0] = figsize[1] / (figure_aspect)
 
-  #plt.close('all')
-  figure = plt.figure(figsize=figsize,
+  fig_kwargs = dict(figsize=figsize,
                       dpi=dpi,
                       clear=True,
                       facecolor='white' if figure_background_color is None else
                       find_color_code(figure_background_color))
+  if create_image_only:
+    figure = Figure(**fig_kwargs)
+    global current_lone_figure
+    current_lone_figure = figure
+  else:
+    figure = plt.figure(**fig_kwargs)
 
   axes = figure.add_axes([
     margin['left'] / figsize[0], margin['bottom'] / figsize[1],
@@ -653,7 +667,14 @@ def show_and_save(save=True,
   global INSIDE_ANIMATION
 
   if not_an_animation:
-    if (save or _is_running_tests()) and USE_PLT_SHOW and not INSIDE_ANIMATION:
+    if create_image_only:
+      global current_lone_figure
+      buf = BytesIO()
+      current_lone_figure.savefig(buf, format=image_format)
+      data = base64.b64encode(buf.getbuffer()).decode('ascii')
+      return data
+
+    elif (save or _is_running_tests()) and USE_PLT_SHOW and not INSIDE_ANIMATION:
       plt.savefig(fname=IMAGES_FOLDER + "/" + filename + '.' + image_format,
                   format=image_format)
   else:

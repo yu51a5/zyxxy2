@@ -16,6 +16,7 @@
 
 import numpy as np
 from matplotlib.transforms import Bbox
+import matplotlib.pyplot as plt
 
 from .shape_style import _get_axes, get_default_text_bubble_params, get_linewidth_factor
 from .utils import calc_angle, calc_Pythagoras
@@ -144,7 +145,14 @@ class WordBubble:
     result = self.connector._get_what_to_move() if self.connector else []
     result += self.text_boxes
     return result
+  
+##################################################################
+  def remove(self):
+    result = self._get_what_to_move()
+    for r in result:
+      r.remove()
 
+##################################################################
   def make_visible(self, val=True):
     for t in self._get_what_to_move():
       t.set_visible(val)
@@ -251,3 +259,10 @@ def draw_a_speech_bubble(text, x, y, position=None, **kwargs):
   if position is not None:
     wb.shift_to_position(xy=[x, y], position=position)
   return wb
+
+##########################################################################################
+def place_text(text, x, y, **kwargs):
+  xlim = plt.gca().get_xlim() 
+  ylim = plt.gca().get_ylim() 
+  sb = draw_a_speech_bubble(text=text, x=x*(xlim[1]-xlim[0]), y=y*(ylim[1]-ylim[0]), **kwargs)
+  return sb
