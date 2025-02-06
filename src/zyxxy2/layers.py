@@ -77,3 +77,9 @@ def remove_layers(layer_nbs=[]):
   _shapes = Shape._get_all_shapes_in_layers(layer_nbs) + WordBubble.get_all_in_layers(layer_nbs)
   for shape in _shapes:
     shape.remove()
+
+##################################################################
+def restyle_layers(layer_nbs=[], **style_kwargs):
+  _shapes = Shape._get_all_shapes_in_layers(layer_nbs) + WordBubble.get_all_in_layers(layer_nbs)
+  for shape in _shapes:
+    shape.set_style(**style_kwargs)

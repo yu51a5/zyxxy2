@@ -51,7 +51,7 @@ if not os.path.exists(IMAGES_FOLDER):
 ########################################################################
 create_image_only = create_image_only_
 current_lone_figure = None
-def set_default_color_etc_settings(val):
+def set_create_image_only(val):
   global create_image_only
   create_image_only = val
 

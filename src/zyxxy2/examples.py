@@ -2,7 +2,7 @@ import numpy as np
 from .canvas import create_canvas_and_axes, show_and_save, draw_and_keep_drawing
 from .shape_style import set_default_text_style, set_default_linewidth, set_default_patch_style, set_default_outline_style, set_default_line_style, get_canvas_height, get_canvas_width
 from .shape_functions import draw_an_egg, draw_a_drop, draw_a_circle, draw_a_square, draw_a_triangle, draw_an_ellipse, draw_a_rectangle, draw_a_smile, draw_a_segment, draw_a_sector, draw_a_polygon, draw_a_broken_line, draw_a_crescent, draw_a_star
-from .coordinates import build_an_arc, link_contours, build_a_circle, build_a_zigzag
+from .coordinates import build_an_arc, link_contours, build_a_circle, build_a_zigzag, build_a_smile
 from .layers import shift_layers, turn_layers, stretch_layers, new_layer, new_layer_outline_behind
 from .utils import random_element, random_number, full_turn_angle, cos, sin, find_GCD, turn
 from .colors import create_gradient_colors, get_color_tint
@@ -312,8 +312,9 @@ def example_yellow_cat_animation(cat_color='Yellow', background_color='SeaWave')
 
 def nice_cat(axes_params=dict(canvas_width=12, canvas_height=16), block=True):
   #######################################################
-  # Creating the canvas!                               
-  create_canvas_and_axes(**axes_params)
+  # Creating the canvas!   
+  if axes_params:                            
+    create_canvas_and_axes(**axes_params)
 
   #######################################################
   # Now let's draw the shapes!                         
@@ -338,8 +339,60 @@ def nice_cat(axes_params=dict(canvas_width=12, canvas_height=16), block=True):
   draw_a_segment(start_x=5, start_y=6+1/2, turn=8, length=2, linewidth=5, color='black')
   draw_a_segment(start_x=7, start_y=6+1/2, turn=4, length=2, linewidth=5, color='black')
   
-  show_and_save(block = block)
+  if axes_params:                            
+    show_and_save(block = block)
   return head, (ear_left, ear_right)
+
+#########################################################
+
+def chic_cat(axes_params=dict(canvas_width=12, canvas_height=16), block=True):
+  #######################################################
+  # Creating the canvas!   
+  if axes_params:                            
+    create_canvas_and_axes(**axes_params)
+
+  #######################################################
+  set_default_outline_style(linewidth=10, color='black', layer_nb=-1)
+  set_default_line_style(linewidth=5, color='black')
+
+  #######################################################
+  # Now let's draw the shapes!                         
+
+  ear_left = draw_a_triangle(width=3, height=3, tip_x=2, tip_y=13, turn=4+1/2, color='orangered')
+  ear_right = draw_a_triangle(width=3, height=3, tip_x=10, tip_y=13, turn=7+1/2, color='orangered')
+  draw_a_triangle(width=2, height=2, tip_x=3, tip_y=12, turn=4+1/2, color='pink')
+  draw_a_triangle(width=2, height=2, tip_x=9, tip_y=12, turn=7+1/2, color='pink')
+  head = draw_a_circle(center_x=6, center_y=8, radius=4, color='orangered')
+
+  new_layer_outline_behind()
+  
+  # eyes
+  eyes = []
+  for center_x in [4, 8]:
+    center = (center_x, 9)
+    eye_white= draw_a_crescent(center=center, width=2.6, depth_1=-.8, depth_2=.8, color='BrightGreen')
+    draw_a_crescent(center=center, width=1.6, depth_1=-.3, depth_2=.3, color='black', clip_outline = eye_white, turn=3)
+    # the following line is needed for animation
+    eyes.append(eye_white)
+
+  # nose
+  nose = draw_a_triangle(width=1.5, height=.8, tip_x=6, tip_y=7, color='BubblePink')
+
+  smile_xy = build_a_smile(width=1, depth=0.5)
+  lipline = link_contours(smile_xy + np.array([6.5, 6.]), [nose.diamond_coords], smile_xy + np.array([5.5, 6]))
+  draw_a_broken_line(contour=lipline)
+
+
+  draw_a_segment(start_x=5, start_y=7, turn=9, length=2)
+  draw_a_segment(start_x=5, start_y=6+3/4, turn=8.5, length=2)
+  draw_a_segment(start_x=5, start_y=6+1/2, turn=8, length=2)
+  draw_a_segment(start_x=7, start_y=7, turn=3, length=2)
+  draw_a_segment(start_x=7, start_y=6+3/4, turn=3.5, length=2)
+  draw_a_segment(start_x=7, start_y=6+1/2, turn=4, length=2)
+  
+  if axes_params:                            
+    show_and_save(block = block)
+  return head, (ear_left, ear_right), eyes
 
 #########################################################
 ## THE CROC                                            ##
