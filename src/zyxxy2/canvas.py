@@ -412,9 +412,9 @@ def create_canvas_and_axes(
 
   # only needed for demo and when called inside models
   if _is_used_as_a_model():
-    axes = plt.gcf().gca()
+    axes = figure.gca()
   if axes is not None:
-    plt.gcf().sca(axes)
+    figure.sca(axes)
     prepare_axes(ax=axes, **params_for_axes)
     return axes
 
@@ -496,8 +496,7 @@ def create_canvas_and_axes(
           figsize[0] = figsize[1] / (figure_aspect)
 
   fig_kwargs = dict(figsize=figsize,
-                      dpi=dpi,
-                      clear=True,
+                      dpi=dpi,              
                       facecolor='white' if figure_background_color is None else
                       find_color_code(figure_background_color))
   if create_image_only:
@@ -505,7 +504,7 @@ def create_canvas_and_axes(
     global current_lone_figure
     current_lone_figure = figure
   else:
-    figure = plt.figure(**fig_kwargs)
+    figure = plt.figure(clear=True, **fig_kwargs)
 
   axes = figure.add_axes([
     margin['left'] / figsize[0], margin['bottom'] / figsize[1],
@@ -551,11 +550,11 @@ def create_canvas_and_axes(
     else:
       global USE_PLT_SHOW
       USE_PLT_SHOW = False
-      plt.gcf().sca(axes_model)
+      figure.sca(axes_model)
       set_default_diamond_size_factor(0)
       use_as_a_model(model)
       USE_PLT_SHOW = True
-      plt.gcf().sca(axes)
+      figure.sca(axes)
       if trace_color is not None:
         set_trace_color(trace_color)
         set_trace_diamond_color(trace_diamond_color)
@@ -571,7 +570,7 @@ def create_canvas_and_axes(
   set_default_diamond_size_factor(diamond_size * (tick_step_x is not None or tick_step_y is not None))
   set_default_diamond_color(diamond_color)
 
-  plt.gcf().sca(axes)
+  figure.sca(axes)
 
   global SLIDE_OR_FRAME_NUMBER
   SLIDE_OR_FRAME_NUMBER = 0

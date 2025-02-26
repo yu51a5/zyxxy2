@@ -150,7 +150,10 @@ class WordBubble:
   def remove(self):
     result = self._get_what_to_move()
     for r in result:
-      r.remove()
+      try:
+        r.remove()
+      except:
+        pass
 
 ##################################################################
   def make_visible(self, val=True):
