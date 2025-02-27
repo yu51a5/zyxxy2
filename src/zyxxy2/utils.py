@@ -217,19 +217,6 @@ def random_element(list_to_choose_from):
 def fix_random_seed():
   random.seed(239)
 
-def random_point_on_axes(ax=None, x_min=None, x_max=None, y_min=None, y_max=None):
-  if ax is None:
-    ax = plt.gca()
-
-  random_x = random_number(limit_1 = x_min if x_min is not None else ax.get_xlim()[0],
-                           limit_2 = x_max if x_max is not None else ax.get_xlim()[1])
-  random_y = random_number(limit_1 = y_min if y_min is not None else ax.get_ylim()[0],
-                           limit_2 = y_max if y_max is not None else ax.get_ylim()[1])
-
-  result = np.array([random_x, random_y])
-  
-  return result
-
 ##################################################################
 ## TRIGONOMETRY HELPERS                                         ## 
 ##################################################################

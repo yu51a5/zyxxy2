@@ -26,7 +26,7 @@ from .coordinates import shape_names_params_dicts_definition, get_type_given_sha
 from .settings import slider_range
 from .layers import new_layer, shift_layers, stretch_layers_with_direction, stretch_layers
 from .pdf import create_a_pdf, create_a_page
-from .shape_class import Shape
+from .shape_class import Shape, get_ca
 
 gap = 1
 text_height = 1.5
@@ -229,7 +229,7 @@ def place_shapes_texts_rectangles(shapes_texts_rectangles, gap_x):
     x_so_far = right_sh + gap_x / 2.
     rs.width = (x_so_far - rs.left) / rs.move_matrix[0][0]
 
-  c_shift = (plt.gca().get_xlim()[1] - rs.right) / 2
+  c_shift = (get_ca().get_xlim()[1] - rs.right) / 2
   for shs, sb_, rs in shapes_texts_rectangles:
     for s in shs + [sb_, rs]:
       s.shift_x(c_shift)
@@ -245,7 +245,7 @@ def print_all_shapes(filename='all_zyxxy_shapes', figsize="A4l", gap_x=0.25):
   create_a_page(page_size=figsize, dpi=200)
   rectangles_background, shapes_texts_rectangles = draw_all_shapes()
 
-  _gca = plt.gca()
+  _gca = get_ca()
   orig_xy = np.array([canvas_width, canvas_height])
   max_xy = np.array([_gca.get_xlim()[1], _gca.get_ylim()[1]])
   stretch_layers(diamond=(0, 0), stretch=min(max_xy/orig_xy))

@@ -10,6 +10,7 @@ import os.path
 import gc, time, types, functools, importlib.machinery
 
 from .utils import fix_random_seed
+from .shape_class import get_ca
 
 headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0' }
 
@@ -78,7 +79,7 @@ def execute_example_or_module(module_or_function):
 ##################################################################
 def show_image(prepared_image, origin=None, ax=None, zorder=0, opacity=1, scaling_factor=1, LB_position=[0, 0]):
     if ax is None:
-      ax = plt.gca()
+      ax = get_ca()
     if origin is None:
       origin = [ax.get_xlim()[0], ax.get_xlim()[1]]
 

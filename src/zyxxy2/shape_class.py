@@ -17,13 +17,102 @@
 import copy
 import numpy as np
 
-from matplotlib.pyplot import Polygon, gca
+from matplotlib.pyplot import Polygon, gca, gcf
 from matplotlib.transforms import Bbox
+from matplotlib.figure import Figure
+
 from . import coordinates
-from .utils import is_the_same_contour, move_by_matrix, get_rotation_matrix, sin, cos, is_a_number
-from .shape_style import set_polygon_style, get_diamond_size, format_arg_dict, line_arg_types, \
+from .utils import is_the_same_contour, move_by_matrix, get_rotation_matrix, sin, cos, is_a_number, random_number
+from .shape_style import set_polygon_style, format_arg_dict, line_arg_types, get_default_color_etc_settings, \
                               raise_Exception_if_not_processed, patch_arg_types, get_polygon_style, get_trace_color
 from .bbox import ObjPosition
+
+from .settings import create_image_only as create_image_only_ 
+from .settings import default_diamond_size, screen_zoom
+
+########################################################################
+create_image_only = create_image_only_
+current_lone_figure = None
+def set_create_image_only(val):
+  global create_image_only
+  create_image_only = val
+
+def is_create_image_only():
+  return create_image_only
+
+def get_cf():
+  if create_image_only:
+    return current_lone_figure
+  return gcf()
+
+def get_ca():
+  if create_image_only:
+    return current_lone_figure.gca() if current_lone_figure else None
+  return gca()
+
+def set_current_lone_figure(*args, **kwargs):
+  global current_lone_figure
+  current_lone_figure = Figure(*args, **kwargs)
+  return current_lone_figure
+
+def get_current_lone_figure():
+  return current_lone_figure
+
+##################################################################
+## CANVAS HELPERS                                               ##
+##################################################################
+def _get_renderer(fig=None):
+  if fig is None:
+    fig = get_cf()
+  rend = fig.canvas.get_renderer()
+  return rend
+
+def _get_axes(ax):
+  if ax is None:
+    ax = get_ca()
+  return ax
+
+def get_canvas_width(ax=None):
+  ax = _get_axes(ax=ax)
+  xlims = ax.get_xlim()
+  return (xlims[1] - xlims[0])
+
+
+def get_canvas_height(ax=None):
+  ax = _get_axes(ax=ax)
+  ylims = ax.get_ylim()
+  return (ylims[1] - ylims[0])
+
+def get_canvas_left(ax=None):
+  ax = _get_axes(ax=ax)
+  xlims = ax.get_xlim()
+  return xlims[0]
+
+def get_canvas_bottom(ax=None):
+  ax = _get_axes(ax=ax)
+  ylims = ax.get_ylim()
+  return ylims[0]
+
+def get_diamond_size(ax=None):
+  ax = _get_axes(ax=ax)
+
+  return get_canvas_width(ax=ax) * default_diamond_size * get_default_color_etc_settings()['diamond_size_factor']
+
+def get_linewidth_factor():
+  return get_cf().dpi / 100 / screen_zoom
+
+def random_point_on_axes(ax=None, x_min=None, x_max=None, y_min=None, y_max=None):
+  if ax is None:
+    ax = get_ca()
+
+  random_x = random_number(limit_1 = x_min if x_min is not None else ax.get_xlim()[0],
+                           limit_2 = x_max if x_max is not None else ax.get_xlim()[1])
+  random_y = random_number(limit_1 = y_min if y_min is not None else ax.get_ylim()[0],
+                           limit_2 = y_max if y_max is not None else ax.get_ylim()[1])
+
+  result = np.array([random_x, random_y])
+  
+  return result
 
 ########################################################################################
 class ShapeFormAttribute:
@@ -70,7 +159,9 @@ class ShapeStyleAttribute:
 
   def __set__(self, instance, val):
     _p_name, _polygon = self.__get_polygon(instance)
-    set_polygon_style(something=_polygon, attr_name=_p_name, kwargs={self.name : val})
+    linewidth_factor = get_linewidth_factor()
+    set_polygon_style(something=_polygon, linewidth_factor=linewidth_factor,
+                       attr_name=_p_name, kwargs={self.name : val})
 
 ##################################################################
 ## SHAPE                                                        ## 
@@ -119,7 +210,7 @@ class Shape:
 ########################################################################
   def _get_all_shapes_in_layers(layer_nbs=[], ax=None):
     if ax is None:
-      ax = gca()
+      ax = get_ca()
     _shapes_in_layers = [as_ for as_ in Shape.all_shapes if as_.get_axes() == ax]
     if len(layer_nbs) != 0:
       _shapes_in_layers = [sh for sh in _shapes_in_layers if sh.get_layer_nb() in layer_nbs]
@@ -194,7 +285,7 @@ class Shape:
     elif len(kwargs) == 2:
       ax = kwargs['ax']
       if ax is None:
-        ax = gca()
+        ax = get_ca()
       shapetype = kwargs['shapetype']
       assert shapetype in ["patch", "line"]
 
@@ -318,7 +409,8 @@ class Shape:
       # (not kwargs) is called in constructor
       # _kwargs is called to pass instance-specific style-arguments
       if _kwargs or not kwargs:
-        set_polygon_style(_attr, attr_name, _kwargs)
+        linewidth_factor = get_linewidth_factor()
+        set_polygon_style(_attr, linewidth_factor, attr_name, _kwargs)
 
     raise_Exception_if_not_processed(kwarg_keys=kwargs.keys(), allowed_keys=used_args)
 

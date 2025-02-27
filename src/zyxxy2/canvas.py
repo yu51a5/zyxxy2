@@ -24,18 +24,17 @@ from functools import partial
 from math import floor
 from matplotlib import animation
 from matplotlib.text import Text
-from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from collections.abc import Iterable
 
 from .shape_style import set_default_diamond_size_factor, set_trace_color, set_trace_diamond_color, \
   find_color_code, reset_default_color_etc_settings, set_default_diamond_color, \
   set_default_color_etc_settings, get_default_color_etc_settings
-from .shape_class import Shape
+from .shape_class import Shape, get_ca, get_cf, is_create_image_only, set_current_lone_figure, get_current_lone_figure
 from .word_bubbles import WordBubble
 from .files import filename_to_image, show_image
 from .utils import equal_or_almost
-from .settings import create_image_only as create_image_only_, default_font_sizes, default_display_params, default_image_params, default_animation_params, default_images_folder
+from .settings import default_font_sizes, default_display_params, default_image_params, default_animation_params, default_images_folder
 
 USE_PLT_SHOW = True
 IMAGES_FOLDER = default_images_folder
@@ -47,13 +46,6 @@ WOULD_BE_AXES_LIMITS = None
 
 if not os.path.exists(IMAGES_FOLDER):
   os.makedirs(IMAGES_FOLDER)
-
-########################################################################
-create_image_only = create_image_only_
-current_lone_figure = None
-def set_create_image_only(val):
-  global create_image_only
-  create_image_only = val
 
 ########################################################################
 
@@ -96,7 +88,7 @@ def _find_absolute_bbox(in_bbox, out_bbox):
 ########################################################################
 def get_axes_limits(ax=None):
   if ax is None:
-    ax = plt.gca()
+    ax = get_ca()
   result = ax.get_xlim(), ax.get_ylim()
   return result
 
@@ -114,12 +106,12 @@ def place_axes_on_axes(ax_parent, ax_parent_absolute, new_coords):
                                          out_bbox=parent_coords)
   new_box_absol = _find_absolute_bbox(in_bbox=new_box_relative,
                                       out_bbox=ax_parent_absolute)
-  ax_new = plt.axes([
+  ax_new = get_cf().axes([
     new_box_absol['x0'], new_box_absol['y0'], new_box_absol['width'],
     new_box_absol['height']
   ])
 
-  plt.gcf().sca(ax_parent)
+  get_cf().sca(ax_parent)
 
   return ax_new
 
@@ -183,7 +175,7 @@ def _find_scale_place_axes(max_width,
                            canvas_aspect=1,
                            title=None,
                            xy=None):
-  figure = plt.gcf()
+  figure = get_cf()
   figsize = figure.get_size_inches()
   margin = _calc_margins(min_margin,
                          title_pad,
@@ -384,10 +376,10 @@ def create_canvas_and_axes(
       'top': top_y
     }
     if axes is not None:
-      plt.gcf().sca(axes)
+      get_cf().sca(axes)
       return axes
     else:
-      return plt.gca()
+      return get_ca()
 
   if tick_step is not None:
     assert tick_step_x is None and tick_step_y is None
@@ -499,10 +491,8 @@ def create_canvas_and_axes(
                       dpi=dpi,              
                       facecolor='white' if figure_background_color is None else
                       find_color_code(figure_background_color))
-  if create_image_only:
-    figure = Figure(**fig_kwargs)
-    global current_lone_figure
-    current_lone_figure = figure
+  if is_create_image_only():
+    figure = set_current_lone_figure(**fig_kwargs)
   else:
     figure = plt.figure(clear=True, **fig_kwargs)
 
@@ -666,10 +656,9 @@ def show_and_save(save=True,
   global INSIDE_ANIMATION
 
   if not_an_animation:
-    if create_image_only:
-      global current_lone_figure
+    if is_create_image_only():
       buf = BytesIO()
-      current_lone_figure.savefig(buf, format=image_format)
+      get_current_lone_figure().savefig(buf, format=image_format)
       data = base64.b64encode(buf.getbuffer()).decode('ascii')
       return data
 
@@ -708,7 +697,7 @@ def show_and_save(save=True,
       result = anim_func(i)
       return __get_all_polygons(result)
 
-    anim = animation.FuncAnimation(fig=plt.gcf(),
+    anim = animation.FuncAnimation(fig=get_cf(),
                                    func=partial(__envelope_animate,
                                                 anim_func=animation_func),
                                    init_func=partial(

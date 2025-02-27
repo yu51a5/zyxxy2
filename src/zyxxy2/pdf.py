@@ -4,6 +4,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
+from .shape_class import get_cf, get_ca
 from .canvas import place_axes
 from .word_bubbles import draw_a_speech_bubble, place_text
 from .utils import random_integer_number, random_element # get_random_int
@@ -85,7 +86,7 @@ def get_random_inspiration(name):
 ##########################################################################################
 def place_watermarks(generator, max_per_line=20, fontsize=8, layer_nb=-5, line_gap=1., color='lightgrey'):  
 
-  t = plt.gca().get_ylim()[1]
+  t = get_ca().get_ylim()[1]
   while t > 0:
     wm_array = [generator() for _ in range(max_per_line)]
     wm_array[0] = wm_array[0][random_integer_number(1, len(wm_array[0])//2):].strip()
@@ -116,7 +117,7 @@ def create_a_page(page_size, dpi, wm_generator=None, header=None, header_fontsiz
 _infodoc_keys = ['Title', 'Author', 'Subject', 'Keywords', 'CreationDate', 'ModDate', 'Producer']
 
 def _singleton_fig_yielder():
-  yield plt.gcf()
+  yield get_cf()
   
 def create_a_pdf(filename, page_yielder=_singleton_fig_yielder, show=False, pdf_info={}):
   assert not {k for k in pdf_info if k not in _infodoc_keys}

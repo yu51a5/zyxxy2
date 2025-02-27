@@ -79,12 +79,6 @@ def get_default_color_etc_settings():
   }
   return saved_settings
 
-
-def get_diamond_size(ax=None):
-  ax = _get_axes(ax=ax)
-  return get_canvas_width(ax=ax) * default_diamond_size * __diamond_size_factor
-
-
 ########################################################################
 
 def raise_Exception_if_not_processed(kwarg_keys, allowed_keys):
@@ -95,41 +89,6 @@ def raise_Exception_if_not_processed(kwarg_keys, allowed_keys):
     raise Exception("Arguments", ', '.join(not_processed),
                     " are not recognised, allowed keys:", allowed_keys)
 
-
-##################################################################
-## CANVAS HELPERS                                               ##
-##################################################################
-def _get_renderer(fig=None):
-  if fig is None:
-    fig = plt.gcf()
-  rend = fig.canvas.get_renderer()
-  return rend
-
-def _get_axes(ax):
-  if ax is None:
-    ax = plt.gca()
-  return ax
-
-def get_canvas_width(ax=None):
-  ax = _get_axes(ax=ax)
-  xlims = ax.get_xlim()
-  return (xlims[1] - xlims[0])
-
-
-def get_canvas_height(ax=None):
-  ax = _get_axes(ax=ax)
-  ylims = ax.get_ylim()
-  return (ylims[1] - ylims[0])
-
-def get_canvas_left(ax=None):
-  ax = _get_axes(ax=ax)
-  xlims = ax.get_xlim()
-  return xlims[0]
-
-def get_canvas_bottom(ax=None):
-  ax = _get_axes(ax=ax)
-  ylims = ax.get_ylim()
-  return ylims[0]
 
 ########################################################################
 
@@ -260,15 +219,10 @@ def get_polygon_style(attr_name, style_name, parent, attr_override=None):
 
 ########################################################################
 
-def get_linewidth_factor():
-  return plt.gcf().dpi / 100 / screen_zoom
-
-def set_polygon_style(something, attr_name, kwargs=None):
+def set_polygon_style(something, linewidth_factor, attr_name, kwargs=None):
 
   if kwargs is None or (not kwargs):
     kwargs = default_color_etc_settings[attr_name]
-
-  linewidth_factor = get_linewidth_factor()
 
   if OUTLINES_color is not None:
     something.set_fc('none')

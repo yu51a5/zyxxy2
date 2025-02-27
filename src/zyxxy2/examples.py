@@ -1,6 +1,8 @@
 import numpy as np
 from .canvas import create_canvas_and_axes, show_and_save, draw_and_keep_drawing
-from .shape_style import set_default_text_style, set_default_linewidth, set_default_patch_style, set_default_outline_style, set_default_line_style, get_canvas_height, get_canvas_width
+from .shape_style import set_default_text_style, set_default_linewidth, set_default_patch_style, \
+  set_default_outline_style, set_default_line_style
+from .shape_class import get_canvas_height, get_canvas_width
 from .shape_functions import draw_an_egg, draw_a_drop, draw_a_circle, draw_a_square, draw_a_triangle, draw_an_ellipse, draw_a_rectangle, draw_a_smile, draw_a_segment, draw_a_sector, draw_a_polygon, draw_a_broken_line, draw_a_crescent, draw_a_star
 from .coordinates import build_an_arc, link_contours, build_a_circle, build_a_zigzag, build_a_smile
 from .layers import shift_layers, turn_layers, stretch_layers, new_layer, new_layer_outline_behind

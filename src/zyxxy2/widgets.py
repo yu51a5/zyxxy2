@@ -20,6 +20,7 @@ from matplotlib.collections import PathCollection
 
 from .settings import widget_params
 from .utils import is_the_same_point
+from .shape_class import get_cf
 
 ##########################################################################################
 default_widget_sizes = {
@@ -61,7 +62,7 @@ def add_vertical_radio_buttons(w_left, w_bottom, w_caption, rb_options, active_o
   active = rb_options.index(active_option) if active_option in rb_options else active_option
   result = RadioButtons(rax, rb_options, active=active, activecolor='black')
 
-  added_text = plt.gcf().text(w_left, new_bottom, w_caption)
+  added_text = get_cf().text(w_left, new_bottom, w_caption)
   new_bottom += default_widget_sizes['height'] + default_widget_sizes['gap']
 
   #for circle in result.circles: # adjust radius here. The default is 0.05
@@ -82,7 +83,7 @@ def add_a_slider(w_left, w_bottom, w_caption, s_vals, w_width=None, caption_in_t
   if caption_in_the_same_line:
     added_text = None
   else:
-    added_text = plt.gcf().text(sax.get_position().xmin, new_bottom, w_caption)
+    added_text = get_cf().text(sax.get_position().xmin, new_bottom, w_caption)
     new_bottom += default_widget_sizes['height'] + default_widget_sizes['gap']
 
   initline_linewidth = widget_params['slider_initline_linewidth']

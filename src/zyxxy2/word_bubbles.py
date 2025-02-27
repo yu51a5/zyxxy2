@@ -18,11 +18,12 @@ import numpy as np
 from matplotlib.transforms import Bbox
 import matplotlib.pyplot as plt
 
-from .shape_style import _get_axes, get_default_text_bubble_params, get_linewidth_factor
+from .shape_style import get_default_text_bubble_params
 from .utils import calc_angle, calc_Pythagoras
 from .shape_functions import draw_a_triangle
 from .colors import find_color_code
 from .bbox import ObjPosition
+from .shape_class import _get_axes, get_ca, get_linewidth_factor
 
 ##################################################################
 ## TEXT                                                         ## 
@@ -265,7 +266,7 @@ def draw_a_speech_bubble(text, x, y, position=None, **kwargs):
 
 ##########################################################################################
 def place_text(text, x, y, **kwargs):
-  xlim = plt.gca().get_xlim() 
-  ylim = plt.gca().get_ylim() 
+  xlim = get_ca().get_xlim() 
+  ylim = get_ca().get_ylim() 
   sb = draw_a_speech_bubble(text=text, x=x*(xlim[1]-xlim[0]), y=y*(ylim[1]-ylim[0]), **kwargs)
   return sb
