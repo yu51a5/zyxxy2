@@ -392,9 +392,9 @@ def chic_cat(axes_params=dict(canvas_width=12, canvas_height=16), block=True):
   draw_a_segment(start_x=7, start_y=6+3/4, turn=3.5, length=2)
   draw_a_segment(start_x=7, start_y=6+1/2, turn=4, length=2)
   
-  if axes_params:                            
-    bytes_ = show_and_save(block = block)
-  return head, (ear_left, ear_right), eyes, bytes_
+  show_and_save(block = block)
+  
+  return head, (ear_left, ear_right), eyes
 
 #########################################################
 ## THE CROC                                            ##

@@ -64,7 +64,10 @@ def get_current_lone_figure():
 def _get_renderer(fig=None):
   if fig is None:
     fig = get_cf()
-  rend = fig.canvas.get_renderer()
+  try:
+    rend = fig.canvas.get_renderer()
+  except:
+    rend = None
   return rend
 
 def _get_axes(ax):

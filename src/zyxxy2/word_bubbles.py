@@ -23,7 +23,7 @@ from .utils import calc_angle, calc_Pythagoras
 from .shape_functions import draw_a_triangle
 from .colors import find_color_code
 from .bbox import ObjPosition
-from .shape_class import _get_axes, get_ca, get_linewidth_factor
+from .shape_class import _get_axes, get_ca, get_linewidth_factor, _get_renderer
 
 ##################################################################
 ## TEXT                                                         ## 
@@ -165,7 +165,7 @@ class WordBubble:
     self.make_visible(False)
 
   def get_bbox(self):
-    rend = self.get_axes().figure.canvas.get_renderer()
+    rend = _get_renderer(self.get_axes().figure)
     tbb = self.text_boxes[0].get_window_extent(renderer=rend)
     abb = self.get_axes().get_window_extent(renderer=rend)
     a_xlim, a_ylim = self.get_axes().get_xlim(), self.get_axes().get_ylim()

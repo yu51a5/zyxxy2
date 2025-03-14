@@ -1,5 +1,5 @@
 from .shape_functions import *
-from .shape_class import random_point_on_axes, set_create_image_only
+from .shape_class import random_point_on_axes, set_create_image_only, get_current_lone_figure
 from .layers import *
 from .colors import *
 from .shape_style import *
