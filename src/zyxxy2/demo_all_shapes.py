@@ -16,7 +16,7 @@
 
 import numpy as np
 from random import random, randint
-import matplotlib.pyplot as plt
+from functools import partial
 
 from .canvas import create_canvas_and_axes, show_and_save, wait_for_enter
 from .shape_functions import draw_a_circle, draw_a_rectangle, draw_a_broken_line, draw_a_polygon, clone_a_shape, draw_a_smile
@@ -36,63 +36,107 @@ canvas_height = 53
 c1 = 2
 c2 = 1
 
-shape_positions_colors_params = [ 
-                              [['a_square', 'superBlue'], 
-                              ['a_rectangle', 'superGold'], 
-                              ['a_triangle', 'superOrange'],
-                              ['a_rhombus', 'superViolet'],
-                              ['a_star', 'Purple', .6, ['orchid', .8, {'ends_qty' : 8, 'radius_1' : 3}]], 
-                              ['a_regular_polygon', 'red', .9, ['orangered', .9, {'vertices_qty' : 8}]],
-                              ['a_polygon', 'turquoise', 1.0, ['darkturquoise', 1.]]], 
-                              [['a_circle', 'superPink', .8],
-                              ['an_ellipse', 'Burgundy'],                             
-                              ['a_drop', 'BubblePink'], 
-                              ['an_egg', 'BrightGreen'], 
-                              ['a_heart', 'RoyalBlue', 3.5], 
-                              ['a_sector', 'DarkTeal', .8, ['SeaWave', .8, {'radius' : 0, 'angle_end' : 1}]], 
-                              ['an_elliptic_sector', 'Yellow', 2, 
-                                        ['yellowgreen', 1.2, {'angle_start' : 3, 'angle_end' : 12}]],
-                              ['a_crescent', 'dimgray', 1., 
-                                            ['darkgray', 1.35, {'depth_2' : -2.5, 'turn' : -3}]],
-                              ['a_squiggle', 'orchid', .8, ['darkorchid', .8, {'speed_x' : 5}]]],
-                              [['a_segment', 'yellow'],
-                              ['a_zigzag', 'LightBlue'],
-                              ['a_power_curve', 'red', 0.7],
-                              ['an_arc', 'PastelBlue', {'diamond_color' : 'PastelBlue'}],
-                              ['a_smile', 'PastelBlue', {'diamond_color' : 'PastelBlue'}],
-                              ['a_wave', 'palegreen'],
-                              ['a_coil', 'lightcoral', 1., 
-                                ['coral', .075, {'speed_x' : 0, 'speed_out' : 3.5}]],
-                              ['a_squiggle_curve', 'orchid', .7, 
-                                ['darkorchid', .7, {'speed_x' : 1.5}],
-                                ['Hyacinth', .7, {'speed_x' : 5/6, 'angle_end':160}]],
-                              ['a_broken_line', 'turquoise', 1., ['darkturquoise', 1.]]],
-                              [['a_wave', 'superBlue', 'shift', (3, .5), 0.5], 
-                                ['a_triangle', 'superBlue', 'turn', 3], 
-                                ['a_rhombus', 'superBlue', 'stretch', 1.8], 
-                                ['a_drop', 'aquamarine', 'stretch_x', 1.5], 
-                                ['a_crescent', 'turquoise', 'stretch_y', 1.5], 
-                                ['an_arc', 'turquoise', 'shift_x', 1.5], 
-                                ['a_zigzag', 'turquoise', 'shift_y', 1.5]]]
+def get_shape_funcs():
+  shape_positions_colors_params = [ 
+                                [['a_square', 'superBlue'], 
+                                ['a_rectangle', 'superGold'], 
+                                ['a_triangle', 'superOrange'],
+                                ['a_rhombus', 'superViolet'],
+                                ['a_star', 'Purple', .6, ['orchid', .8, {'ends_qty' : 8, 'radius_1' : 3}]], 
+                                ['a_regular_polygon', 'red', .9, ['orangered', .9, {'vertices_qty' : 8}]],
+                                ['a_polygon', 'turquoise', 1.0, ['darkturquoise', 1.]]], 
+                                [['a_circle', 'superPink', .8],
+                                ['an_ellipse', 'Burgundy'],                             
+                                ['a_drop', 'BubblePink'], 
+                                ['an_egg', 'BrightGreen'], 
+                                ['a_heart', 'RoyalBlue', 3.5], 
+                                ['a_sector', 'DarkTeal', .8, ['SeaWave', .8, {'radius' : 0, 'angle_end' : 1}]], 
+                                ['an_elliptic_sector', 'Yellow', 2, 
+                                          ['yellowgreen', 1.2, {'angle_start' : 3, 'angle_end' : 12}]],
+                                ['a_crescent', 'dimgray', 1., 
+                                              ['darkgray', 1.35, {'depth_2' : -2.5, 'turn' : -3}]],
+                                ['a_squiggle', 'orchid', .8, ['darkorchid', .8, {'speed_x' : 5}]]],
+                                [['a_segment', 'yellow'],
+                                ['a_zigzag', 'LightBlue'],
+                                ['a_power_curve', 'red', 0.7],
+                                ['an_arc', 'PastelBlue', {'diamond_color' : 'PastelBlue'}],
+                                ['a_smile', 'PastelBlue', {'diamond_color' : 'PastelBlue'}],
+                                ['a_wave', 'palegreen'],
+                                ['a_coil', 'lightcoral', 1., 
+                                  ['coral', .075, {'speed_x' : 0, 'speed_out' : 3.5}]],
+                                ['a_squiggle_curve', 'orchid', .7, 
+                                  ['darkorchid', .7, {'speed_x' : 1.5}],
+                                  ['Hyacinth', .7, {'speed_x' : 5/6, 'angle_end':160}]],
+                                ['a_broken_line', 'turquoise', 1., ['darkturquoise', 1.]]],
+                                [['a_wave', 'superBlue', 'shift', (3, .5), 0.5], 
+                                  ['a_triangle', 'superBlue', 'turn', 3], 
+                                  ['a_rhombus', 'superBlue', 'stretch', 1.8], 
+                                  ['a_drop', 'aquamarine', 'stretch_x', 1.5], 
+                                  ['a_crescent', 'turquoise', 'stretch_y', 1.5], 
+                                  ['an_arc', 'turquoise', 'shift_x', 1.5], 
+                                  ['a_zigzag', 'turquoise', 'shift_y', 1.5]]]
 
-def get_funny_curves():
-  smile = build_a_smile(width=3, depth=0.5)
-  zigzag = build_a_zigzag(width=3, height=0.5, angle_start=-3, nb_segments=6)
-  zigzag += -zigzag[0] + smile[-1] + [0, 3.5]
-  a_curve = np.concatenate((smile, zigzag), axis=0)
-  a_random_curve = [[random()*3.5, random()*3.5] for _ in range(randint(15, 25))]
-  return a_curve, a_random_curve 
+  def get_funny_curves():
+    smile = build_a_smile(width=3, depth=0.5)
+    zigzag = build_a_zigzag(width=3, height=0.5, angle_start=-3, nb_segments=6)
+    zigzag += -zigzag[0] + smile[-1] + [0, 3.5]
+    a_curve = np.concatenate((smile, zigzag), axis=0)
+    a_random_curve = [[random()*3.5, random()*3.5] for _ in range(randint(15, 25))]
+    return a_curve, a_random_curve 
 
-a_curve, a_random_curve = get_funny_curves()
+  a_curve, a_random_curve = get_funny_curves()
+
+
+  shape_names_params_dicts_definition_plus = {'a_polygon' : {}, 'a_broken_line' : {}, 
+                                              **shape_names_params_dicts_definition}
+  result_shape_funcs_zooms = []  
+  for i, all_shapes_infos in enumerate(shape_positions_colors_params):
+    result_shape_funcs_zooms.append({})
+    for shapes_info in all_shapes_infos:
+      shapename = shapes_info[0]
+      title = shapename if i != 3 else shapes_info[2]
+      long_params = shape_names_params_dicts_definition_plus[shapename]
+
+      shape_params = {p_name : slider_range[p_slider_params][2] 
+                                if isinstance(p_slider_params, str) else p_slider_params[1] 
+                                            for p_name, p_slider_params in long_params.items()}
+
+      func = draw_a_polygon if get_type_given_shapename(shapename) == 'patch' else draw_a_broken_line
+      zoom_factor = 1.
+      if len(shapes_info) >= 3:
+        zoom_or_params = shapes_info[2 if i != 3 else -1]  
+        if isinstance(zoom_or_params, dict):
+          shape_params.update(zoom_or_params)
+        elif (i != 3) or len(shapes_info) == 5:
+          zoom_factor = zoom_or_params
+
+      shf = partial(func, diamond_x=0, diamond_y=0, color=shapes_info[1], **shape_params,
+                contour=a_curve if shapename in ('a_polygon', 'a_broken_line') else shapename)
+      result_shape_funcs_zooms[-1][title] = [[shf, zoom_factor]]
+      if i == 3:
+        result_shape_funcs_zooms[-1][title][0].append(shapes_info[3])
+      else:
+        for sh_ in shapes_info[3:]:
+          if len(sh_) > 2:
+            shape_params.update(sh_[2])
+          shf = partial(func, diamond_x=0, diamond_y=0, color=sh_[0], **shape_params,
+                              contour=a_random_curve if shapename in ('a_polygon', 'a_broken_line') else shapename)
+          result_shape_funcs_zooms[-1][title].append([shf, sh_[1]])
+
+  return result_shape_funcs_zooms
+
+shape_funcs_zooms = get_shape_funcs()
+
+def get_all_polygon_funcs():
+  polygon_funcs_etc = shape_funcs_zooms[0] | shape_funcs_zooms[1]
+  result = [e[0] for v in polygon_funcs_etc.values() for e in v]
+  return result
 
 def draw_all_shapes():
 
   sb = draw_a_speech_bubble(text='Run try_shapes() to see how the shape parameters work!', 
                             x=canvas_width/2, y=gap, position='cb', 
                             fontsize=10, background_color='plum')
-  
-  shape_names_params_dicts_definition_plus = {'a_polygon' : {}, 'a_broken_line' : {}, 
-                                              **shape_names_params_dicts_definition}
 
   titles_bottom = sb.top+5*gap+2*(text_height+shape_height)
   titles_top = titles_bottom + 6
@@ -116,57 +160,35 @@ def draw_all_shapes():
   # Now let's draw the shapes!                         ##
 
   shapes_texts_rectangles = []
-  for i, (text_color, text_y, shapes_infos) in enumerate(zip(
-                                   bg_colors, text_ys, shape_positions_colors_params)):
+  for i, (text_color, text_y, shape_func_zoom) in enumerate(zip(
+                                   bg_colors, text_ys, shape_funcs_zooms)):
 
     shapes_texts_rectangles.append([])
     shape_y = text_y + text_height + 0.5 * shape_height
-    for shapes_info in shapes_infos:
-      shapename = shapes_info[0]
+    for title, shapes_func_zoom in shape_func_zoom.items():
+      
       x_so_far = 0
-      sb_ = draw_a_speech_bubble(text=shapename if i < 3 else shapes_info[2], fontsize=8, position='lc',
+      sb_ = draw_a_speech_bubble(text=title, fontsize=8, position='lc',
                                 x=x_so_far, y=text_y, color=text_color, background_color='none')
-      long_params = shape_names_params_dicts_definition_plus[shapename]
+      
 
-      shape_params = {p_name : slider_range[p_slider_params][2] 
-                                if isinstance(p_slider_params, str) else p_slider_params[1] 
-                                            for p_name, p_slider_params in long_params.items()}
-
-      func = draw_a_polygon if get_type_given_shapename(shapename) == 'patch' else draw_a_broken_line
-      if len(shapes_info) >= 3:
-        zoom_or_params = shapes_info[2]
-        if isinstance(zoom_or_params, dict):
-          shape_params.update(zoom_or_params)
-
-      shs = [func(diamond_x=0, diamond_y=0, color=shapes_info[1], **shape_params,
-                contour=a_curve if shapename in ('a_polygon', 'a_broken_line') else shapename)]
-
-      zoom_factor = 1.
-      if ((len(shapes_info) >= 3) if i != 3 else (len(shapes_info) == 5)):
-        zoom_or_params = shapes_info[2 if i != 3 else -1]
-        if not isinstance(zoom_or_params, dict):
-          zoom_factor = zoom_or_params
-
-      shs[0].stretch(zoom_factor)
+      shs = [shapes_func_zoom[0][0]()]
+      shs[0].stretch(shapes_func_zoom[0][1])
       shs[0].shift_to_position(xy=[x_so_far, shape_y], position='lc')
 
       if i != 3:
         x_so_far += shs[-1].get_bbox().width
-        for sh_ in shapes_info[3:]:
+        for func_, zoom_ in shapes_func_zoom[1:]:
           x_so_far += gap
-          if len(sh_) > 2:
-            shape_params.update(sh_[2])
-          shs.append(func(diamond_x=0, diamond_y=0, color=sh_[0], **shape_params,
-                          contour=a_random_curve if shapename in ('a_polygon', 'a_broken_line') else shapename))
-          shs[-1].stretch(sh_[1])
+          shs.append(func_())
+          shs[-1].stretch(zoom_)
           shs[-1].shift_to_position(xy=[x_so_far, shape_y], position='lc')
           x_so_far += shs[-1].get_bbox().width
-        
       else:
         shs[0].shift_to_position(xy=[x_so_far, shape_y], position='lc')
         shs.append(clone_a_shape(shs[0]))
-        an_attr = getattr(shs[0], shapes_info[2])
-        an_attr(shapes_info[3])
+        an_attr = getattr(shs[0], title)
+        an_attr(shapes_func_zoom[0][2])
         shift_value = x_so_far - min([sh2.left for sh2 in shs])
         for sh in shs:
           sh.left += shift_value
