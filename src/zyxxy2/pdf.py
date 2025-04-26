@@ -88,16 +88,22 @@ def get_random_inspiration(name=None):
   return insp
 
 ##########################################################################################
-def place_watermarks(generator, max_per_line=20, fontsize=8, layer_nb=-5, line_gap=1., color='lightgrey'):  
+def place_watermarks(generator, 
+                     max_per_line=20, fontsize=8, copyright=None,
+                     layer_nb=-5, line_gap=1., color='lightgrey'):  
 
   t = get_ca().get_ylim()[1]
+  i = 0
   while t > 0:
-    wm_array = [generator() for _ in range(max_per_line)]
+    wm_array = [generator() for _ in range(max_per_line)] \
+          if ((i%2) or (not copyright)) \
+          else ['© '+ copyright + ' ' for _ in range(max_per_line)] 
     wm_array[0] = wm_array[0][random_integer_number(1, len(wm_array[0])//2):].strip()
     new_wm = ' '.join(wm_array)
     wm_text = draw_a_speech_bubble(text=new_wm, x=0, y=t, fontsize=fontsize, position='lt', 
                                    color=color, layer_nb=layer_nb, wrap=False, background_color='none')
     t = wm_text.bottom * (1 + line_gap) - line_gap * wm_text.top
+    i += 1
 
 ##########################################################################################
 def create_a_page(page_size, dpi, bg_color=None, wms=None, header=None, header_fontsize=20, margin=.05, header_top_margin=.02, **wm_kwargs):
