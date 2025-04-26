@@ -3,7 +3,31 @@
 import sys; sys.path.append('src')
 
 from timeit import default_timer as timer
-from zyxxy2 import calc_angle, get_axes_limits, new_layer, draw_a_speech_bubble, set_default_text_style, find_color_code, find_color_code_HEX, find_color_code_int, nice_cat, wait_for_enter, shift_layers, stretch_layers, draw_a_circle, random_integer_number, is_the_same_point, find_color_code
+from zyxxy2 import *
+
+set_create_image_only(True)
+create_a_page(page_size='LETTERl', dpi=300, bg_color='black', wms=True, 
+              wm_fontsize=8, wm_color='dimgrey', margin=0)
+show_and_save(save=True, filename='bg_black', image_folder=None)
+
+create_a_page(page_size='LETTERl', dpi=300, bg_color='white', wms='Betsy', 
+              wm_fontsize=8, wm_color='gainsboro', margin=0)
+show_and_save(save=True, filename='bg_white', image_folder=None)
+
+##########################################################################################
+
+
+f = get_all_polygon_funcs()
+view_all_shapes(gap_x=1)
+print_all_shapes(gap_x=0.2)
+
+quit()
+
+set_create_image_only(True)
+head, (ear_left, ear_right), eyes, bytes_ = chic_cat()
+print("done", type(bytes_))
+quit()
+
 
 from zyxxy2 import example_penguins # 
 example_penguins()

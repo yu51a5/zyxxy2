@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "zyxxy2"
-version = "0.1351"
+version = "0.135691"
 authors = [
   { name="Yulia V", email="yu51a5@proton.me" },
 ]
@@ -23,8 +23,7 @@ dependencies = [
     "numpy>=1.26.3",
     "scipy>=1.11.4",
     "pillow>=10.2.0",
-    "matplotlib>=3.8.2",
-    "reportlab>=4.2.5",
+    "matplotlib>=3.8.2"
 ]
 
 [project.urls]

@@ -581,7 +581,7 @@ def reset_folder_for_saving():
 
 ##################################################################
 def __get_output_filename_and_format(filename=None, image_format=None):
-  if filename is None or filename == "":
+  if not filename:
     frame = inspect.stack()[2]  #1
     module = inspect.getmodule(frame[0])
     if module is not None:
@@ -614,15 +614,23 @@ def __get_output_filename_and_format(filename=None, image_format=None):
 
 
 ##################################################################
+def convert_figure_to_image(fig, img_format='png'):
+  buf = BytesIO()
+  fig.savefig(buf, format=img_format)
+  imb_byte = base64.b64encode(buf.getbuffer()).decode('ascii')
+  return imb_byte
+
+##################################################################
 # this function shows the drawing
 # and saves if as a file if requested
 # more information in the document below
 # https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.savefig.html#matplotlib.pyplot.savefig
-
+##################################################################
 
 def show_and_save(save=True,
                   filename=None,
                   image_format=None,
+                  image_folder=IMAGES_FOLDER,
                   animation_interval=default_animation_params['interval'],
                   animation_blit=default_animation_params['blit'],
                   animation_repeat=default_animation_params['repeat'],
@@ -657,13 +665,20 @@ def show_and_save(save=True,
 
   if not_an_animation:
     if is_create_image_only():
-      buf = BytesIO()
-      get_current_lone_figure().savefig(buf, format=image_format)
-      data = base64.b64encode(buf.getbuffer()).decode('ascii')
-      return data
+      if not save:
+        buf = BytesIO()
+        get_current_lone_figure().savefig(buf, format=image_format)
+        data = base64.b64encode(buf.getbuffer()).decode('ascii')
+        return data
+      else:
+        fn = [filename + '.' + image_format]
+        if image_folder:
+          fn = [image_folder] + fn
+        get_current_lone_figure().savefig(fname=os.path.join(*fn),
+                                          format=image_format)
 
     elif (save or _is_running_tests()) and USE_PLT_SHOW and not INSIDE_ANIMATION:
-      plt.savefig(fname=IMAGES_FOLDER + "/" + filename + '.' + image_format,
+      plt.savefig(fname=image_folder + "/" + filename + '.' + image_format,
                   format=image_format)
   else:
     ########################################################################
@@ -710,7 +725,7 @@ def show_and_save(save=True,
 
     INSIDE_ANIMATION = False
     if save:
-      full_filename = IMAGES_FOLDER + "/" + filename + '.' + animation_format
+      full_filename = image_folder + "/" + filename + '.' + animation_format
       try:
         writer = animation.writers[animation_writer](fps=animation_FPS)
         anim.save(full_filename, writer=writer)

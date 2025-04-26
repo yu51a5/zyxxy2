@@ -278,4 +278,4 @@ def print_all_shapes(filename='all_zyxxy_shapes', figsize="A4l", gap_x=0.25):
   for strs in shapes_texts_rectangles:
     place_shapes_texts_rectangles(strs, gap_x=gap_x)
   
-  create_a_pdf(filename=filename, show=False, pdf_info={'Title' : filename})
+  create_a_pdf(filename=filename, pdf_info={'Title' : filename})
